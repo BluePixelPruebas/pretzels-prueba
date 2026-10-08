@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #06080F; color: #E8ECF5; font-family: Archivo, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #6E9BFF; text-decoration: none; }
+  a:hover { color: #A9C4FF; }
+  ::selection { background: #1F5BFF; color: #fff; }
+  @keyframes bpReveal { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  html.bp-motion [data-reveal] { opacity: 0; }
+  html.bp-motion [data-reveal].bp-in { animation: bpReveal 0.72s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+  @media (prefers-reduced-motion: reduce) {
+    html.bp-motion [data-reveal] { opacity: 1; }
+    html.bp-motion [data-reveal].bp-in { animation: none; }
+  }
+</style>
+</helmet>
+
+<div style="width: 100%; background: #06080F;">
+  <span id="top"></span>
+
+  <header style="position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px); background: rgba(6,8,15,0.82); border-bottom: 1px solid rgba(255,255,255,0.07);">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 14px 40px; display: flex; align-items: center; gap: 32px;">
+      <div style="display: flex; align-items: center; gap: 16px; margin-right: auto;">
+        <a href="#top" aria-label="Ir al inicio" style="display: block; line-height: 0; transition: opacity 0.18s ease;" style-hover="opacity: 0.75;"><img src="uploads/BLUEPIXEL LOGO.png" alt="Bluepixel" style="height: 20px; width: auto; display: block; filter: invert(1) hue-rotate(180deg);"></a>
+        <span style="font-family: 'DM Mono', monospace; font-size: 11px; color: #6B7488; letter-spacing: 0.08em; text-transform: uppercase; padding-left: 16px; border-left: 1px solid rgba(255,255,255,0.12);">Caso de éxito</span>
+      </div>
+      <nav style="display: flex; gap: 8px; font-size: 13px;">
+        <a href="#contexto" style="color: #97A0B5; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.09); transition: all 0.18s ease;" style-hover="color: #EEF2FA; border-color: rgba(79,216,255,0.35); background: rgba(31,91,255,0.12);">Reto y solución</a>
+        <a href="#resultados" style="color: #97A0B5; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.09); transition: all 0.18s ease;" style-hover="color: #EEF2FA; border-color: rgba(79,216,255,0.35); background: rgba(31,91,255,0.12);">Resultados</a>
+        <a href="#impacto" style="color: #97A0B5; padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.09); transition: all 0.18s ease;" style-hover="color: #EEF2FA; border-color: rgba(79,216,255,0.35); background: rgba(31,91,255,0.12);">Impacto en el negocio</a>
+      </nav>
+    </div>
+  </header>
+
+  <section data-screen-label="01 · Hero" style="max-width: 1240px; margin: 0 auto; padding: 76px 40px 0;">
+    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 26px;">
+      <a href="#" style="font-family: 'DM Mono', monospace; font-size: 12px; color: #6B7488; transition: color 0.18s ease;" style-hover="color: #97A0B5;">Caso de éxito</a>
+      <span style="color: #333C50;">/</span>
+      <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #97A0B5;">HIR Casa</span>
+    </div>
+    <div style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 28px;">Financiamiento inmobiliario · Rediseño y desarrollo web</div>
+    <h1 style="font-size: clamp(34px, 5vw, 64px); line-height: 1.06; letter-spacing: -0.035em; font-weight: 600; margin: 0 0 36px; max-width: 28ch; text-wrap: balance;">Cómo un rediseño puede transformar la experiencia y mejorar los resultados de negocio.</h1>
+    <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: start;">
+      <div>
+        <p style="font-size: 18px; line-height: 1.6; color: #97A0B5; margin: 0 0 24px; max-width: 52ch; text-wrap: pretty;">Rediseñamos la experiencia digital de HIR Casa para crear una plataforma más rápida, flexible y preparada para evolucionar junto con sus necesidades de negocio.</p>
+        <a href="https://hircasa.com/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #8FB4FF; padding: 10px 18px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14); transition: all 0.18s ease;" style-hover="color: #EEF2FA; border-color: rgba(79,216,255,0.4); background: rgba(31,91,255,0.12);">Visitar HIR Casa →</a>
+      </div>
+      <div style="border-left: 2px solid #1F5BFF; padding-left: 24px;">
+        <div style="font-size: clamp(38px, 4vw, 56px); line-height: 0.95; letter-spacing: -0.04em; font-weight: 600; background: linear-gradient(120deg, #FFFFFF 30%, #4FD8FF); -webkit-background-clip: text; background-clip: text; color: transparent;">Semanas<br>a minutos</div>
+        <div style="font-size: 14px; color: #97A0B5; margin-top: 14px; line-height: 1.5;">Lo que antes requería ciclos de desarrollo para actualizar contenidos, formularios o el blog, ahora puede resolverse en minutos desde la plataforma.</div>
+      </div>
+    </div>
+
+    <div data-reveal style="margin-top: 48px; border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; aspect-ratio: 16 / 7; overflow: hidden; background: #fff;">
+      <img src="uploads/Home.png" alt="Home del nuevo sitio de HIR Casa" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block;">
+    </div>
+
+    <div data-reveal data-delay="80" style="margin-top: 16px; border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; display: grid; grid-template-columns: repeat(4, 1fr); overflow: hidden; align-items: stretch;">
+      <div style="padding: 28px 24px; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488;">CLIENTE</div>
+        <div style="font-size: 15px; color: #E8ECF5; line-height: 1.4;">HIR Casa</div>
+      </div>
+      <div style="padding: 28px 24px; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488;">INDUSTRIA</div>
+        <div style="font-size: 15px; color: #E8ECF5; line-height: 1.4;">Financiamiento inmobiliario</div>
+      </div>
+      <div style="padding: 28px 24px; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488;">SERVICIOS</div>
+        <div style="font-size: 15px; color: #E8ECF5; line-height: 1.4;">UX Discovery, UX/UI, Desarrollo y QA Testing</div>
+      </div>
+      <div style="padding: 28px 24px; display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488;">STACK</div>
+        <div style="font-size: 15px; color: #E8ECF5; line-height: 1.4;">React · Strapi</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contexto" data-screen-label="02 · Reto y solución" style="max-width: 1240px; margin: 0 auto; padding: 96px 40px 0;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 32px;">01 · Reto y solución</div>
+    <div data-reveal style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; display: grid; grid-template-columns: repeat(3, 1fr); overflow: hidden;">
+      <div style="padding: 34px 32px; border-right: 1px solid rgba(255,255,255,0.07); transition: background 0.24s ease;" style-hover="background: rgba(255,255,255,0.035);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 14px;">CONTEXTO</div>
+        <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC;">HIR Casa necesitaba evolucionar su experiencia digital para acompañar mejor las necesidades de sus usuarios y del negocio.</div>
+      </div>
+      <div style="padding: 34px 32px; border-right: 1px solid rgba(255,255,255,0.07); background: rgba(31,91,255,0.08); transition: background 0.24s ease;" style-hover="background: rgba(31,91,255,0.15);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #8FB4FF; margin-bottom: 14px;">EL RETO</div>
+        <div style="font-size: 16px; line-height: 1.65; color: #E8ECF5;">El sitio existente presentaba oportunidades tanto de experiencia como de operación. Los usuarios enfrentaban una experiencia que podía generar fricción, mientras que el equipo de Marketing dependía de terceros para realizar cambios y actualizar contenido.</div>
+      </div>
+      <div style="padding: 34px 32px; transition: background 0.24s ease;" style-hover="background: rgba(255,255,255,0.035);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 14px;">QUÉ HIZO BLUEPIXEL</div>
+        <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC; margin-bottom: 16px;">Partimos de UX Discovery y usability testing para entender las principales oportunidades de la experiencia. A partir de estos hallazgos, rediseñamos la experiencia UX/UI y reconstruimos la plataforma con React y Strapi, incorporando una arquitectura más flexible y una operación más autónoma.</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span style="font-size: 12px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 5px 12px;">UX Discovery</span>
+          <span style="font-size: 12px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 5px 12px;">Usability Testing</span>
+          <span style="font-size: 12px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 5px 12px;">UX/UI</span>
+          <span style="font-size: 12px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 5px 12px;">React</span>
+          <span style="font-size: 12px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 5px 12px;">Strapi</span>
+          <span style="font-size: 12px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 5px 12px;">QA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados" data-screen-label="03 · Resultados" style="margin-top: 96px; background: linear-gradient(180deg, #0A1024, #0A1024 62%, #06080F); border-top: 1px solid rgba(255,255,255,0.07); border-bottom: 1px solid rgba(255,255,255,0.07);">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 104px 40px 108px;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 22px;">02 · Resultados de experiencia digital</div>
+      <h2 style="font-size: 52px; line-height: 1.05; letter-spacing: -0.035em; font-weight: 600; margin: 0 0 56px; max-width: 26ch;">Una experiencia más rápida, una interacción más fluida.</h2>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <div data-reveal data-delay="0" style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 26px 28px; background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)); transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: linear-gradient(180deg, rgba(31,91,255,0.13), rgba(255,255,255,0.015));">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #4D566B; margin-bottom: 24px;">01</div>
+          <div style="font-size: 62px; line-height: 0.9; letter-spacing: -0.04em; font-weight: 600; color: #fff; white-space: nowrap;"><span data-count="24" data-prefix="−" data-suffix="%">−24%</span></div>
+          <div style="height: 1px; background: linear-gradient(90deg, rgba(79,216,255,0.55), rgba(255,255,255,0.05)); margin: 22px 0 16px;"></div>
+          <div style="font-size: 15px; color: #C6CEDC; line-height: 1.5;">Menos tiempo de carga</div>
+        </div>
+        <div data-reveal data-delay="70" style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 26px 28px; background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)); transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: linear-gradient(180deg, rgba(31,91,255,0.13), rgba(255,255,255,0.015));">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #4D566B; margin-bottom: 24px;">02</div>
+          <div style="font-size: 62px; line-height: 0.9; letter-spacing: -0.04em; font-weight: 600; color: #fff; white-space: nowrap;"><span data-count="14" data-prefix="+">+14</span> <span style="font-size: 26px; letter-spacing: -0.02em;">pts</span></div>
+          <div style="height: 1px; background: linear-gradient(90deg, rgba(79,216,255,0.55), rgba(255,255,255,0.05)); margin: 22px 0 16px;"></div>
+          <div style="font-size: 15px; color: #C6CEDC; line-height: 1.5;">PageSpeed Mobile</div>
+        </div>
+        <div data-reveal data-delay="140" style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 26px 28px; background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)); transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: linear-gradient(180deg, rgba(31,91,255,0.13), rgba(255,255,255,0.015));">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #4D566B; margin-bottom: 24px;">03</div>
+          <div style="font-size: 62px; line-height: 0.9; letter-spacing: -0.04em; font-weight: 600; color: #fff; white-space: nowrap;"><span data-count="3.2" data-prefix="−" data-decimals="1">−3.2</span> <span style="font-size: 26px; letter-spacing: -0.02em;">pp</span></div>
+          <div style="height: 1px; background: linear-gradient(90deg, rgba(79,216,255,0.55), rgba(255,255,255,0.05)); margin: 22px 0 16px;"></div>
+          <div style="font-size: 15px; color: #C6CEDC; line-height: 1.5;">Tasa de rebote</div>
+        </div>
+        <div data-reveal data-delay="210" style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 26px 28px; background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)); transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: linear-gradient(180deg, rgba(31,91,255,0.13), rgba(255,255,255,0.015));">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #4D566B; margin-bottom: 24px;">04</div>
+          <div style="font-size: 62px; line-height: 0.9; letter-spacing: -0.04em; font-weight: 600; color: #fff; white-space: nowrap;"><span data-count="14" data-prefix="+" data-suffix="%">+14%</span></div>
+          <div style="height: 1px; background: linear-gradient(90deg, rgba(79,216,255,0.55), rgba(255,255,255,0.05)); margin: 22px 0 16px;"></div>
+          <div style="font-size: 15px; color: #C6CEDC; line-height: 1.5;">Tiempo de interacción</div>
+        </div>
+        <div data-reveal data-delay="280" style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 26px 28px; background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)); transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: linear-gradient(180deg, rgba(31,91,255,0.13), rgba(255,255,255,0.015));">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #4D566B; margin-bottom: 24px;">05</div>
+          <div style="font-size: 62px; line-height: 0.9; letter-spacing: -0.04em; font-weight: 600; color: #fff; white-space: nowrap;"><span data-count="7" data-prefix="+" data-suffix="%">+7%</span></div>
+          <div style="height: 1px; background: linear-gradient(90deg, rgba(79,216,255,0.55), rgba(255,255,255,0.05)); margin: 22px 0 16px;"></div>
+          <div style="font-size: 15px; color: #C6CEDC; line-height: 1.5;">Páginas por sesión</div>
+        </div>
+        <div data-reveal data-delay="350" style="border: 1px solid rgba(79,216,255,0.3); border-radius: 18px; padding: 26px 28px; background: linear-gradient(150deg, rgba(31,91,255,0.18), rgba(255,255,255,0.02)); transition: border-color 0.28s ease, transform 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.55); transform: translateY(-3px);">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #8FB4FF; margin-bottom: 24px;">06</div>
+          <div style="font-size: 62px; line-height: 0.9; letter-spacing: -0.04em; font-weight: 600; white-space: nowrap; background: linear-gradient(120deg, #FFFFFF 35%, #4FD8FF); -webkit-background-clip: text; background-clip: text; color: transparent;"><span data-count="12" data-prefix="+" data-suffix="%">+12%</span></div>
+          <div style="height: 1px; background: linear-gradient(90deg, rgba(79,216,255,0.8), rgba(255,255,255,0.05)); margin: 22px 0 16px;"></div>
+          <div style="font-size: 15px; color: #E8ECF5; line-height: 1.5;">Finalización de la calculadora<span style="color: #8FB4FF;">*</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; font-family: 'DM Mono', monospace; font-size: 11px; color: #6B7488; letter-spacing: 0.04em;">* Mejora relativa respecto al periodo anterior.</div>
+
+      <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div data-reveal style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; overflow: hidden; transition: border-color 0.3s ease, transform 0.3s ease;" style-hover="border-color: rgba(255,255,255,0.2); transform: translateY(-3px);">
+          <div style="padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #6B7488;">ANTES</span>
+            <span style="font-size: 12px; color: #6B7488;">WordPress</span>
+          </div>
+          <div style="padding: 26px 28px 20px; font-size: 20px; line-height: 1.3; letter-spacing: -0.02em; font-weight: 500; color: #C6CEDC;">Una experiencia con fricción</div>
+          <div style="aspect-ratio: 16 / 10; background: #fff; overflow: hidden;">
+            <img src="uploads/pasted-1786995901346-0.png" alt="Sitio anterior de HIR Casa" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; image-rendering: -webkit-optimize-contrast;">
+          </div>
+          <div style="padding: 26px 28px; display: grid; gap: 14px;">
+            <div style="display: grid; grid-template-columns: 8px 1fr; gap: 14px; align-items: start; font-size: 14px; line-height: 1.6; color: #97A0B5;">
+              <span style="width: 8px; height: 8px; background: #4D566B; margin-top: 7px;"></span>
+              <span>Los cambios de contenido dependían de terceros</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 8px 1fr; gap: 14px; align-items: start; font-size: 14px; line-height: 1.6; color: #97A0B5;">
+              <span style="width: 8px; height: 8px; background: #4D566B; margin-top: 7px;"></span>
+              <span>Actualizar contenido, blog o formularios podía tomar entre una y dos semanas</span>
+            </div>
+          </div>
+        </div>
+        <div data-reveal data-delay="90" style="border: 1px solid rgba(79,216,255,0.28); border-radius: 20px; overflow: hidden; background: linear-gradient(180deg, rgba(31,91,255,0.1), rgba(255,255,255,0.01)); transition: border-color 0.3s ease, transform 0.3s ease;" style-hover="border-color: rgba(79,216,255,0.5); transform: translateY(-3px);">
+          <div style="padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.09); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #4FD8FF;">DESPUÉS</span>
+            <span style="font-size: 12px; color: #8FB4FF;">React + Strapi</span>
+          </div>
+          <div style="padding: 26px 28px 20px; font-size: 20px; line-height: 1.3; letter-spacing: -0.02em; font-weight: 500; color: #EEF2FA;">Una plataforma diseñada para evolucionar</div>
+          <div style="aspect-ratio: 16 / 10; background: #fff; overflow: hidden;">
+            <img src="uploads/Calculadora- Step 1 (Default).png" alt="Calculadora del nuevo sitio de HIR Casa" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block;">
+          </div>
+          <div style="padding: 26px 28px; display: grid; gap: 14px;">
+            <div style="display: grid; grid-template-columns: 8px 1fr; gap: 14px; align-items: start; font-size: 14px; line-height: 1.6; color: #C6CEDC;">
+              <span style="width: 8px; height: 8px; background: #4FD8FF; margin-top: 7px;"></span>
+              <span>Marketing puede actualizar contenidos y formularios directamente desde la consola</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 8px 1fr; gap: 14px; align-items: start; font-size: 14px; line-height: 1.6; color: #C6CEDC;">
+              <span style="width: 8px; height: 8px; background: #4FD8FF; margin-top: 7px;"></span>
+              <span>Los cambios que antes requerían semanas ahora pueden resolverse en minutos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="impacto" data-screen-label="04 · Impacto en el negocio" style="max-width: 1240px; margin: 0 auto; padding: 96px 40px 0;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 22px;">03 · Impacto en el negocio</div>
+    <h2 style="font-size: 40px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 600; margin: 0 0 40px; max-width: 26ch;">El impacto va más allá del sitio</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+      <div data-reveal style="border: 1px solid rgba(255,255,255,0.13); border-radius: 20px; padding: 40px 36px; background: rgba(255,255,255,0.025); display: flex; align-items: baseline; gap: 28px; transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: rgba(31,91,255,0.11);">
+        <div style="font-size: 84px; line-height: 0.9; letter-spacing: -0.045em; font-weight: 600; color: #fff; white-space: nowrap;"><span data-count="4" data-prefix="+">+4</span> <span style="font-size: 34px; letter-spacing: -0.02em;">pp</span></div>
+        <div style="font-size: 16px; color: #C6CEDC; line-height: 1.5;">Leads calificados</div>
+      </div>
+      <div data-reveal data-delay="70" style="border: 1px solid rgba(255,255,255,0.13); border-radius: 20px; padding: 40px 36px; background: rgba(255,255,255,0.025); display: flex; align-items: baseline; gap: 28px; transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: rgba(31,91,255,0.11);">
+        <div style="font-size: 84px; line-height: 0.9; letter-spacing: -0.045em; font-weight: 600; color: #fff;"><span data-count="9" data-prefix="+" data-suffix="%">+9%</span></div>
+        <div style="font-size: 16px; color: #C6CEDC; line-height: 1.5;">Conversión de lead a cita</div>
+      </div>
+    </div>
+
+    <div data-reveal style="border-left: 2px solid rgba(79,216,255,0.5); padding: 4px 0 4px 32px;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #4FD8FF; margin-bottom: 16px;">NOTA DE ATRIBUCIÓN</div>
+      <div style="font-size: 17px; line-height: 1.7; color: #97A0B5; max-width: 78ch; text-wrap: pretty;">Durante este periodo, HIR Casa también fortaleció su estrategia de <strong style="color: #E8ECF5; font-weight: 500;">Paid Media</strong>, <strong style="color: #E8ECF5; font-weight: 500;">SEM</strong>, <strong style="color: #E8ECF5; font-weight: 500;">SEO</strong>, <strong style="color: #E8ECF5; font-weight: 500;">ORM</strong> y distintas iniciativas comerciales. Por ello, estos resultados deben entenderse como parte de un <strong style="color: #E8ECF5; font-weight: 500;">esfuerzo integral</strong> y no como efecto exclusivo del rediseño.</div>
+    </div>
+
+    <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+      <div data-reveal style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 36px 32px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008)); transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: linear-gradient(180deg, rgba(31,91,255,0.11), rgba(255,255,255,0.012));">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #6B7488; margin-bottom: 20px;">OPERACIÓN</div>
+        <div style="font-size: 22px; line-height: 1.3; letter-spacing: -0.02em; font-weight: 500; color: #EEF2FA; margin-bottom: 16px;">De ciclos de desarrollo a autonomía</div>
+        <div style="font-size: 16px; line-height: 1.65; color: #97A0B5;">Marketing puede actualizar contenidos, gestionar el blog y modificar formularios directamente desde la plataforma, reduciendo la dependencia de terceros y acelerando la respuesta ante nuevas necesidades.</div>
+      </div>
+      <div data-reveal data-delay="80" style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 36px 32px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008)); transition: border-color 0.28s ease, transform 0.28s ease, background 0.28s ease;" style-hover="border-color: rgba(79,216,255,0.34); transform: translateY(-3px); background: linear-gradient(180deg, rgba(31,91,255,0.11), rgba(255,255,255,0.012));">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #6B7488; margin-bottom: 20px;">AGILIDAD COMERCIAL</div>
+        <div style="font-size: 22px; line-height: 1.3; letter-spacing: -0.02em; font-weight: 500; color: #EEF2FA; margin-bottom: 16px;">De reaccionar a anticiparse</div>
+        <div style="font-size: 16px; line-height: 1.65; color: #97A0B5;">Esta autonomía permite al equipo responder con mayor rapidez a campañas, contenidos y necesidades comerciales, aprovechando mejor las oportunidades generadas por sus iniciativas digitales.</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="05 · Testimonio" style="max-width: 1240px; margin: 0 auto; padding: 96px 40px 40px;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">04 · Testimonio</div>
+    <div data-reveal style="border: 1px solid rgba(255,255,255,0.11); border-radius: 20px; padding: 36px 44px; background: linear-gradient(120deg, rgba(31,91,255,0.14), rgba(255,255,255,0.015)); display: grid; grid-template-columns: 1fr 260px; gap: 48px; align-items: center;">
+      <div style="font-size: 18px; line-height: 1.6; letter-spacing: -0.01em; color: #EEF2FA; text-wrap: pretty;">“Procesos que antes podían tomar entre una y dos semanas hoy pueden resolverse en minutos. Esto nos dio mayor autonomía para actualizar contenidos, gestionar el blog, modificar formularios y reaccionar con rapidez ante campañas o necesidades comerciales.”</div>
+      <div style="display: flex; align-items: center; gap: 14px; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 32px;">
+        <div style="width: 42px; height: 42px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 12px; color: #8FB4FF; flex-shrink: 0;">JM</div>
+        <div>
+          <div style="font-size: 15px; font-weight: 500;">José Medina</div>
+          <div style="font-size: 14px; color: #97A0B5; line-height: 1.4;">Coordinador de Marketing · HIR Casa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="max-width: 1240px; margin: 60px auto 0; padding: 28px 40px 48px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 11px; color: #4D566B; letter-spacing: 0.06em;">
+    <span>BLUEPIXEL · CASO DE ÉXITO · HIR CASA</span>
+    <span>hircasa.com</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() {
+    this.setupReveals();
+    const nodes = Array.from(document.querySelectorAll("[data-count]"));
+    if (!nodes.length || !("IntersectionObserver" in window)) return;
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const run = (el) => {
+      const target = parseFloat(el.dataset.count);
+      const dec = parseInt(el.dataset.decimals || "0", 10);
+      const pre = el.dataset.prefix || "";
+      const suf = el.dataset.suffix || "";
+      const dur = 1100;
+      const t0 = performance.now();
+      const step = (now) => {
+        const p = Math.min(1, (now - t0) / dur);
+        el.textContent = pre + (target * ease(p)).toFixed(dec) + suf;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && !e.target.dataset.counted) {
+          e.target.dataset.counted = "1";
+          run(e.target);
+          this.io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    nodes.forEach((n) => this.io.observe(n));
+  }
+  setupReveals() {
+    const els = Array.from(document.querySelectorAll("[data-reveal]"));
+    if (!els.length || !("IntersectionObserver" in window)) return;
+    document.documentElement.classList.add("bp-motion");
+    this.ro = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        el.style.animationDelay = (el.dataset.delay || 0) + "ms";
+        el.classList.add("bp-in");
+        this.ro.unobserve(el);
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    els.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.9) el.classList.add("bp-in");
+      else this.ro.observe(el);
+    });
+  }
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.ro) this.ro.disconnect();
+    document.documentElement.classList.remove("bp-motion");
+  }
+}
+</script>
+</body>
+</html>

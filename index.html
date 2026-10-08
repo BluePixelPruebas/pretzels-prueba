@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Google Tag Manager (Ejemplo de Snippet Base) -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-XXXXXXX');
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="googlebot" content="noindex, nofollow, noarchive">
+    <title>Wetzel's Pretzels - Demo Técnico & App V2.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Preview Warning Banner -->
+    <div style="background-color: #fff3cd; color: #856404; text-align: center; padding: 10px; font-size: 0.85rem; font-weight: 600; font-family: sans-serif; position: relative; z-index: 99999; border-bottom: 1px solid #ffeeba;">
+        Prototipo de UI BluePixel: Los formularios son demostrativos y no procesan ni envían datos reales. · Internal UI prototype: Forms are mockups and do not process real data.
+    </div>
+    <div class="layout">
+        <!-- App Simulator Panel -->
+        <main class="app-panel">
+            <div class="device-frame" style="position: relative;">
+                <!-- Splash Screen -->
+                <div id="splash-screen" style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, var(--w-blue-dark), var(--w-blue)); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; pointer-events: none;">
+                    <img src="logo.svg" alt="Wetzel's Pretzels" style="width: 260px; animation: pulse 2s infinite;">
+                </div>
+
+                <!-- Dynamic Island -->
+                <div id="dynamic-island" style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 32px; background: black; border-radius: 20px; z-index: 9000; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                    <span id="dynamic-island-content" style="color: white; font-size: 0.8rem; font-weight: 600; opacity: 0; transition: opacity 0.2s; white-space: nowrap;"></span>
+                </div>
+
+                <!-- Face ID Overlay -->
+                <div id="face-id-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 9998; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;">
+                    <span id="face-id-icon" class="material-symbols-rounded" style="font-size: 4rem; color: white; margin-bottom: 1rem; animation: pulse 1.5s infinite;">face</span>
+                    <span id="face-id-text" style="color: white; font-weight: 600; font-size: 1.2rem;">Face ID</span>
+                </div>
+
+                <!-- QR Reward Modal -->
+                <div id="qr-modal" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;">
+                    <div style="background: white; border-radius: 24px; padding: 2rem; width: 85%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <h3 style="color: var(--w-blue-dark); font-weight: 800; font-size: 1.4rem; margin-top: 0; margin-bottom: 0.5rem;" id="qr-modal-title">¡Recompensa Lista!</h3>
+                        <p style="color: var(--w-text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; font-weight: 600;">Muestra este código al cajero en cualquier sucursal para recibir tu <span id="qr-modal-item" style="color: var(--w-yellow-dark); font-weight: 800;">Limonada Ch</span> gratis.</p>
+                        
+                        <div style="background: white; border: 4px solid var(--w-yellow); border-radius: 16px; padding: 1rem; display: inline-block; margin-bottom: 1.5rem;">
+                            <!-- Fake QR Code Image using public API -->
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=WETZELS-REWARD-12345" alt="QR Code" style="width: 150px; height: 150px; display: block;">
+                        </div>
+                        
+                        <button class="btn btn-primary" style="width: 100%; font-size: 1rem;" onclick="app.closeQrModal()">Entendido</button>
+                    </div>
+                </div>
+
+                <!-- Fake iPhone Notch -->
+                <div class="notch"></div>
+                
+                <header class="app-header">
+                    <img src="logo.svg" alt="Wetzel's Pretzels" class="logo" onclick="app.toggleGodMode()" style="cursor:crosshair; width: 130px; margin-top: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));" title="Activar God Mode">
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0;">
+                        <div id="header-cart-btn" class="header-cart hidden" onclick="app.goToCheckout()" style="padding: 0.35rem 0.6rem; gap: 0.3rem;">
+                            <span class="material-symbols-rounded" style="font-size: 1.2rem;">shopping_cart</span>
+                            <span id="cart-total-header" class="cart-price" style="font-size: 0.85rem;">$0.00</span>
+                        </div>
+                        <span class="material-symbols-rounded" onclick="app.toggleSideMenu()" style="cursor: pointer; font-size: 1.8rem; margin-left: 0.2rem;">menu</span>
+                    </div>
+                </header>
+                
+                <div id="app-content" class="app-content">
+                    
+                    <!-- Step 1: Login -->
+                    <div id="step-login" class="step-container active">
+                        <div class="hero-image">🥨</div>
+                        <h2 class="text-center">Bienvenido a Wetzel's</h2>
+                        <p class="text-center text-muted">Inicia sesión para ganar Rewards y personalizar tus pretzels.</p>
+                        
+                        <div class="spacer"></div>
+                        
+                        <div class="input-group">
+                            <label>Correo electrónico</label>
+                            <input type="email" placeholder="alan@ejemplo.com" id="login-email">
+                        </div>
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password" placeholder="••••••••" id="login-password">
+                        </div>
+                        
+                        <button class="btn btn-primary mt-4" onclick="app.loginEmail()">
+                            Iniciar Sesión
+                        </button>
+                        
+                        <div class="divider">o entra con</div>
+
+                        <button class="btn btn-outline" onclick="app.login()">
+                            <span class="material-symbols-rounded">g_mobiledata</span> Google
+                        </button>
+                        <p class="text-center text-muted mt-4" style="font-size: 0.7rem; padding-top: 1rem;">
+                            <span class="material-symbols-rounded" style="font-size: 0.8rem; vertical-align: middle;">shield</span> 
+                            Cumplimiento LFPDPPP & OWASP Top 10
+                        </p>
+                    </div>
+
+                    <!-- Step 2: Order Type & Store -->
+                    <div id="step-stores" class="step-container hidden">
+                        <h2>¿Cómo lo quieres?</h2>
+                        
+                        <div class="tabs" style="padding: 0.3rem; background: #e2e8f0; border-radius: 12px; display: flex; gap: 0.3rem;">
+                            <div class="tab active" onclick="app.setOrderType('pickup', this)" style="display:flex; justify-content:center; align-items:center; gap:0.5rem;"><span style="font-size: 1.2rem;">🏃‍♂️</span> Pickup</div>
+                            <div class="tab" onclick="app.setOrderType('delivery', this)" style="display:flex; justify-content:center; align-items:center; gap:0.5rem;"><span style="font-size: 1.2rem;">🛵</span> Delivery</div>
+                        </div>
+
+                        <div id="pickup-view">
+                            <h3 class="section-title mt-4">Tiendas Cercanas</h3>
+                            <div class="store-list">
+                                <div class="store-card" onclick="app.selectStore('Santa Fe')">
+                                    <div class="store-info">
+                                        <h4 style="display: flex; align-items: center; gap: 0.5rem; margin:0;">Wetzel's Santa Fe <span class="badge" style="background:#10b981; color:white; border-radius: 10px;">🟢 Abierto</span></h4>
+                                        <p><span class="material-symbols-rounded">location_on</span> A 2.5 km (Centro Comercial)</p>
+                                        <p style="color: var(--w-blue); font-weight: 700; margin-top: 0.3rem; font-size: 0.8rem;"><span class="material-symbols-rounded" style="font-size: 1rem;">schedule</span> Listo en 15 min</p>
+                                    </div>
+                                    <div style="background: var(--w-yellow); padding: 0.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-image: url('patternYellowPretzels.webp'); background-size: 100px; box-shadow: 0 4px 0 var(--w-yellow-dark);"><span class="material-symbols-rounded" style="color: var(--w-blue-dark);">arrow_forward</span></div>
+                                </div>
+                                <div class="store-card" onclick="app.selectStore('Mitikah')">
+                                    <div class="store-info">
+                                        <h4 style="display: flex; align-items: center; gap: 0.5rem; margin:0;">Wetzel's Mitikah <span class="badge" style="background:#10b981; color:white; border-radius: 10px;">🟢 Abierto</span></h4>
+                                        <p><span class="material-symbols-rounded">location_on</span> A 5.1 km (Planta Baja)</p>
+                                        <p style="color: var(--w-blue); font-weight: 700; margin-top: 0.3rem; font-size: 0.8rem;"><span class="material-symbols-rounded" style="font-size: 1rem;">schedule</span> Listo en 25 min</p>
+                                    </div>
+                                    <div style="background: var(--w-yellow); padding: 0.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-image: url('patternYellowPretzels.webp'); background-size: 100px; box-shadow: 0 4px 0 var(--w-yellow-dark);"><span class="material-symbols-rounded" style="color: var(--w-blue-dark);">arrow_forward</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="delivery-view" class="hidden">
+                            <h3 class="section-title mt-4">Dirección de Entrega</h3>
+                            <div class="input-group">
+                                <input type="text" placeholder="📍 Ingresa tu calle y número" style="background: white; border: 2px solid #e2e8f0; padding: 1.2rem; border-radius: 12px; font-weight: 600; width: 100%; box-sizing: border-box; font-size: 1rem;">
+                            </div>
+                            <div class="promo-banner mt-4" style="background: linear-gradient(135deg, #10b981, #059669); padding: 1rem 1.2rem; border-radius: 16px; margin-bottom: 2.5rem; box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);">
+                                <div class="promo-content">
+                                    <h3 style="font-size: 1.15rem; color: white; margin: 0; line-height: 1.1;">¡ENVÍO GRATIS!</h3>
+                                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-top: 4px; font-weight: 600;">En pedidos mayores a $200</p>
+                                </div>
+                                <div class="promo-img" style="font-size: 2.2rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">🛵💨</div>
+                            </div>
+                            <button class="btn btn-primary" onclick="app.selectStore('Delivery a Domicilio')" style="width: 100%;">Confirmar Dirección</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Home Dashboard -->
+                    <div id="step-home" class="step-container hidden">
+                        <!-- Top Location Bar -->
+                        <div onclick="app.showStep('stores')" style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 0.7rem 1.2rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 1.5rem; cursor: pointer; border: 1px solid rgba(0, 59, 112, 0.05);">
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <div style="background: rgba(0, 114, 206, 0.1); padding: 0.5rem; border-radius: 50%; color: var(--w-blue); display: flex;">
+                                    <span class="material-symbols-rounded" id="header-order-icon" style="font-size: 1.2rem;">storefront</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span id="header-order-label" style="font-size: 0.7rem; color: var(--w-text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Recoger en</span>
+                                    <span id="current-store-display" style="font-size: 0.95rem; color: var(--w-blue-dark); font-weight: 800; line-height: 1.2;">Wetzel's Santa Fe</span>
+                                </div>
+                            </div>
+                            <span class="material-symbols-rounded" style="color: var(--w-blue-dark);">expand_more</span>
+                        </div>
+
+                        <!-- User Info & Rewards -->
+                        <div class="user-greeting" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                            <div>
+                                <p style="text-transform: uppercase; font-weight: 800; color: var(--w-text-muted); margin-bottom: -2px; font-size: 1.1rem; letter-spacing: 0.5px;">Hola,</p>
+                                <h2 style="font-size: 2.8rem; text-transform: uppercase; color: var(--w-blue-dark); line-height: 1; margin: 0; font-weight: 900; transform: rotate(-2deg); transform-origin: left center;">Alan</h2>
+                            </div>
+                            <div style="display: flex; align-items: flex-start;">
+                                <div class="rewards-badge" onclick="app.showStep('rewards')" style="background-color: var(--w-yellow); background-image: url('patternYellowPretzels.webp'); background-size: 80px; border: 2px solid var(--w-yellow-dark); color: var(--w-blue-dark); font-weight: 900; padding: 0.6rem 1rem; border-radius: 20px; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; box-shadow: 0 4px 0 var(--w-yellow-dark); transform: rotate(2deg);">
+                                    <span class="material-symbols-rounded" style="font-size: 1.2rem;">stars</span>
+                                    <span>1,250 pts</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Banner Pretzel Maker -->
+                        <div class="promo-banner mt-4" style="background: var(--w-blue-dark); position: relative; overflow: hidden; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);" onclick="app.startCreatePretzel()">
+                            <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(255, 209, 0, 0.05); border-radius: 50%;"></div>
+                            <div class="promo-content" style="position: relative; z-index: 1;">
+                                <span style="background-color: var(--w-yellow); background-image: url('patternYellowPretzels.webp'); background-size: 100px; color: var(--w-blue-dark); font-size: 0.65rem; padding: 4px 8px; border-radius: 8px; font-weight: 900; display: inline-block; margin-bottom: 0.5rem; box-shadow: 0 4px 0 var(--w-yellow-dark);">🌟 NUEVA EXPERIENCIA</span>
+                                <h3 style="font-size: 1.4rem; color: white; margin: 0; line-height: 1.1; font-weight: 900;">CREA TU<br>PROPIO<br>PRETZEL</h3>
+                                <p style="font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 0.3rem;">Arma tu creación ideal</p>
+                            </div>
+                            <div class="promo-img" style="position: relative; z-index: 1; transform: scale(1.15) rotate(5deg); margin-right: 0.5rem; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3));">
+                                <span style="font-size: 2.2rem; display: block; margin-bottom: -15px;">🧑‍🍳</span>
+                                <span style="font-size: 3rem; display: block;">🥨</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="section-title mt-4" style="margin-bottom: 0;">Favoritos del Menú</h3>
+                        </div>
+                        <div class="horizontal-scroll">
+                            <!-- Bitz -->
+                            <div class="menu-card" onclick="app.addMenuItem('Wetzel Bitz', 75.00, '🥨')">
+                                <div class="menu-icon">🥨</div>
+                                <h4>Wetzel Bitz</h4>
+                                <p>$75.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <!-- Twist -->
+                            <div class="menu-card" onclick="app.addMenuItem('Pepperoni Twist', 85.00, '🍕')">
+                                <div class="menu-icon">🍕</div>
+                                <h4>Pepperoni Twist</h4>
+                                <p>$85.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <!-- Dog -->
+                            <div class="menu-card" onclick="app.addMenuItem('Cheese Dog', 90.00, '🌭')">
+                                <div class="menu-icon">🌭</div>
+                                <h4>Cheese Dog</h4>
+                                <p>$90.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <!-- Sweet -->
+                            <div class="menu-card" onclick="app.addMenuItem('Sinful Cinnamon', 70.00, '✨')">
+                                <div class="menu-icon">✨</div>
+                                <h4>Sinful Cinnamon</h4>
+                                <p>$70.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <!-- Drink -->
+                            <div class="menu-card" onclick="app.addMenuItem('Frozen Lemonade', 65.00, '🧊')">
+                                <div class="menu-icon">🧊</div>
+                                <h4>Frozen Lemonade</h4>
+                                <p>$65.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 mb-2" style="display: flex; justify-content: center;">
+                            <button class="btn btn-outline" onclick="app.showStep('menu')" style="width: auto; padding: 0.7rem 2rem; border-radius: 100px; font-weight: 800; font-size: 0.95rem; border-color: var(--w-blue); color: var(--w-blue); display: flex; align-items: center; gap: 0.5rem; background: transparent;">
+                                Ver todo el menú <span class="material-symbols-rounded" style="font-size: 1.2rem;">arrow_forward</span>
+                            </button>
+                        </div>
+
+                        <h3 class="section-title mt-4">Nueva Presentación</h3>
+                        <div class="promo-banner mt-2 mb-4" style="background: linear-gradient(135deg, #FF7B00, #FF5500); cursor: pointer;" onclick="app.addMenuItem('Wetzel Bitz 12 PZS', 95.00, '🥨')">
+                            <div class="promo-content">
+                                <span style="background: white; color: var(--w-blue-dark); font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">BITES</span>
+                                <h3 style="font-size: 1.2rem; color: white; margin-top: 5px; line-height: 1.1;">NUEVA<br>PRESENTACIÓN</h3>
+                                <p style="font-weight: 900; font-size: 1.4rem; color: white;">12 PZS</p>
+                            </div>
+                            <div class="promo-img">🥨</div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Step: Full Menu -->
+                    <div id="step-menu" class="step-container hidden">
+                        <div class="header-back">
+                            <span class="material-symbols-rounded" onclick="app.showStep('home')">arrow_back</span>
+                            <h2>Menú Completo</h2>
+                        </div>
+
+                        <div class="input-group mb-4">
+                            <input type="text" placeholder="🔍 Buscar pretzels, bebidas..." style="padding-left: 2.5rem; border-radius: 20px;">
+                        </div>
+
+                        <!-- Categorías -->
+                        <div class="ingredient-grid" id="menu-pills" style="margin-bottom: 1.5rem;">
+                            <div class="pill selected" style="min-width: max-content;" onclick="app.filterMenu('todos', this)">🌟 Todos</div>
+                            <div class="pill" style="min-width: max-content;" onclick="app.filterMenu('pretzels', this)">🥨 Pretzels</div>
+                            <div class="pill" style="min-width: max-content;" onclick="app.filterMenu('bitz', this)">🤏 Bitz</div>
+                            <div class="pill" style="min-width: max-content;" onclick="app.filterMenu('dogs', this)">🌭 Dogs</div>
+                            <div class="pill" style="min-width: max-content;" onclick="app.filterMenu('bebidas', this)">🧊 Bebidas</div>
+                        </div>
+
+                        <!-- Banner Pretzel Maker -->
+                        <div class="promo-banner mt-2 mb-4" style="background: var(--w-blue-dark); position: relative; overflow: hidden; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);" onclick="app.startCreatePretzel()">
+                            <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(255, 209, 0, 0.05); border-radius: 50%;"></div>
+                            <div class="promo-content" style="position: relative; z-index: 1;">
+                                <span style="background-color: var(--w-yellow); background-image: url('patternYellowPretzels.webp'); background-size: 100px; color: var(--w-blue-dark); font-size: 0.65rem; padding: 4px 8px; border-radius: 8px; font-weight: 900; display: inline-block; margin-bottom: 0.5rem; box-shadow: 0 4px 0 var(--w-yellow-dark);">🌟 NUEVA EXPERIENCIA</span>
+                                <h3 style="font-size: 1.4rem; color: white; margin: 0; line-height: 1.1; font-weight: 900;">CREA TU<br>PROPIO<br>PRETZEL</h3>
+                                <p style="font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 0.3rem;">Arma tu creación ideal</p>
+                            </div>
+                            <div class="promo-img" style="position: relative; z-index: 1; transform: scale(1.15) rotate(5deg); margin-right: 0.5rem; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3));">
+                                <span style="font-size: 2.2rem; display: block; margin-bottom: -15px;">🧑‍🍳</span>
+                                <span style="font-size: 3rem; display: block;">🥨</span>
+                            </div>
+                        </div>
+                        <!-- Section: Pretzels -->
+                        <h3 id="cat-pretzels" class="section-title">Pretzels</h3>
+                        <div class="full-menu-grid pb-2">
+                            <div class="menu-card" onclick="app.addMenuItem('Original', 65.00, '🥨')">
+                                <div class="menu-icon">🥨</div>
+                                <h4>Original</h4>
+                                <p>$65.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Sinful Cinnamon', 70.00, '✨')">
+                                <div class="menu-icon">✨</div>
+                                <h4>Sinful Cinnamon</h4>
+                                <p>$70.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Almond Crunch', 75.00, '🥜')">
+                                <div class="menu-icon">🥜</div>
+                                <h4>Almond Crunch</h4>
+                                <p>$75.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Jalapeño Cheese', 80.00, '🌶️🧀')">
+                                <span class="scarcity-badge">Solo quedan 2</span>
+                                <div class="menu-icon">🌶️🧀</div>
+                                <h4>Jalapeño Cheese</h4>
+                                <p>$80.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Jalaroni®', 85.00, '🌶️🍕')">
+                                <div class="menu-icon">🌶️🍕</div>
+                                <h4>Jalaroni®</h4>
+                                <p>$85.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Pepperoni Twist', 85.00, '🍕')">
+                                <div class="menu-icon">🍕</div>
+                                <h4>Pepperoni Twist</h4>
+                                <p>$85.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Cheese Meltdown', 75.00, '🧀')">
+                                <div class="menu-icon">🧀</div>
+                                <h4>Cheese Meltdown</h4>
+                                <p>$75.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Sour Cream & Onion', 75.00, '🧅')">
+                                <div class="menu-icon">🧅</div>
+                                <h4>Sour Cream & Onion</h4>
+                                <p>$75.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                        </div>
+
+                        <!-- Section: Bitz -->
+                        <h3 id="cat-bitz" class="section-title mt-4">Bitz</h3>
+                        <div class="full-menu-grid pb-2">
+                            <div class="menu-card" onclick="app.addMenuItem('Wetzel Bitz', 75.00, '🤏')">
+                                <div class="menu-icon">🤏</div>
+                                <h4>Wetzel Bitz</h4>
+                                <p>$75.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Cinnamon Bitz', 80.00, '✨')">
+                                <div class="menu-icon">✨</div>
+                                <h4>Cinnamon Bitz</h4>
+                                <p>$80.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Almond Bitz', 85.00, '🥜')">
+                                <div class="menu-icon">🥜</div>
+                                <h4>Almond Bitz</h4>
+                                <p>$85.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Jalapeño Bitz', 90.00, '🌶️')">
+                                <div class="menu-icon">🌶️</div>
+                                <h4>Jalapeño Bitz</h4>
+                                <p>$90.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                        </div>
+
+                        <!-- Section: Dogs -->
+                        <h3 id="cat-dogs" class="section-title mt-4">Dogs</h3>
+                        <div class="full-menu-grid pb-2">
+                            <div class="menu-card" onclick="app.addMenuItem('Wetzel Dog', 85.00, '🌭')">
+                                <div class="menu-icon">🌭</div>
+                                <h4>Wetzel Dog</h4>
+                                <p>$85.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Cheese Dog', 90.00, '🧀')">
+                                <div class="menu-icon">🧀</div>
+                                <h4>Cheese Dog</h4>
+                                <p>$90.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Dog Bites', 80.00, '🌭')">
+                                <div class="menu-icon">🌭</div>
+                                <h4>Dog Bites</h4>
+                                <p>$80.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                        </div>
+
+                        <!-- Section: Bebidas -->
+                        <h3 id="cat-bebidas" class="section-title mt-4">Bebidas</h3>
+                        <div class="full-menu-grid pb-4">
+                            <div class="menu-card" onclick="app.addMenuItem('Fresh Lemonade', 60.00, '🍋')">
+                                <div class="menu-icon">🍋</div>
+                                <h4>Fresh Lemonade</h4>
+                                <p>$60.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                            <div class="menu-card" onclick="app.addMenuItem('Frozen Lemonade', 65.00, '🧊')">
+                                <div class="menu-icon">🧊</div>
+                                <h4>Frozen Lemonade</h4>
+                                <p>$65.00</p>
+                                <button class="btn-add"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                        </div>
+
+                        <!-- Banner Bites (Bottom of Menu) -->
+                        <h3 class="section-title mt-4">Nueva Presentación</h3>
+                        <div class="promo-banner mt-2 mb-4" style="background: linear-gradient(135deg, #FF7B00, #FF5500); cursor: pointer;" onclick="app.addMenuItem('Wetzel Bitz 12 PZS', 95.00, '🥨')">
+                            <div class="promo-content">
+                                <span style="background: white; color: var(--w-blue-dark); font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">BITES</span>
+                                <h3 style="font-size: 1.2rem; color: white; margin-top: 5px; line-height: 1.1;">NUEVA<br>PRESENTACIÓN</h3>
+                                <p style="font-weight: 900; font-size: 1.4rem; color: white;">12 PZS</p>
+                            </div>
+                            <div class="promo-img">🥨</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Create Pretzel -->
+                    <div id="step-create" class="step-container hidden">
+                        <div class="header-back">
+                            <span class="material-symbols-rounded" onclick="app.showStep('home')">arrow_back</span>
+                            <h2>Pretzel Maker</h2>
+                        </div>
+                        
+                        <div class="visual-preview">
+                            <div class="pretzel-art" id="pretzel-visual">🥨</div>
+                            <div class="preview-info">
+                                <h3>Pretzel Original</h3>
+                                <p id="preview-desc">Base horneada con mantequilla.</p>
+                            </div>
+                        </div>
+
+                        <div class="builder-section">
+                            <label>Toppings (Hasta 3) <span class="badge">+$10 c/u</span></label>
+                            <div class="ingredient-grid">
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'topping', 'Sal', '🧂')">
+                                    <div class="icon">🧂</div><span>Sal</span>
+                                </div>
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'topping', 'Canela', '✨')">
+                                    <div class="icon">✨</div><span>Canela</span>
+                                </div>
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'topping', 'Jalapeño', '🌶️')">
+                                    <div class="icon">🌶️</div><span>Jalapeño</span>
+                                </div>
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'topping', 'Queso', '🧀')">
+                                    <div class="icon">🧀</div><span>Queso</span>
+                                </div>
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'topping', 'Pepperoni', '🍕')">
+                                    <div class="icon">🍕</div><span>Pepperoni</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="builder-section">
+                            <label>Dips & Salsas <span class="badge">+$15 c/u</span></label>
+                            <div class="ingredient-grid">
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'dip', 'Cheddar', '🧀')">
+                                    <div class="icon">🧀</div><span>Cheddar</span>
+                                </div>
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'dip', 'Pizza Sauce', '🍅')">
+                                    <div class="icon">🍅</div><span>Pizza</span>
+                                </div>
+                                <div class="ingredient-card" onclick="app.toggleOption(this, 'dip', 'Caramel', '🍯')">
+                                    <div class="icon">🍯</div><span>Caramel</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="upsell-box mt-4" style="margin-bottom: 4rem;">
+                            <div class="upsell-info">
+                                <span class="material-symbols-rounded text-blue">local_drink</span>
+                                <div>
+                                    <h4>¿Agregar Limonada Fresca?</h4>
+                                    <p>Por solo $40.00 más</p>
+                                </div>
+                            </div>
+                            <input type="checkbox" class="toggle" id="drink-toggle" onchange="app.toggleDrink(this)">
+                        </div>
+
+                        <button class="btn btn-primary floating-btn" onclick="app.finishPretzelMaker()" style="display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.2rem; font-size: 0.95rem;">
+                            <span style="white-space: nowrap; font-weight: 700;">Agregar a Carrito</span>
+                            <span style="font-weight: 800; font-size: 1.05rem;">$<span id="maker-price">65.00</span></span>
+                        </button>
+                    </div>
+
+                    <!-- Step 5: Checkout -->
+                    <div id="step-checkout" class="step-container hidden">
+                        <div class="header-back">
+                            <span class="material-symbols-rounded" onclick="app.showStep('home')">arrow_back</span>
+                            <h2>Checkout</h2>
+                        </div>
+                        
+                        <div class="order-summary" id="order-summary">
+                            <!-- Populated by JS -->
+                        </div>
+                        
+                        <div class="coupon-box">
+                            <span class="material-symbols-rounded text-muted">local_activity</span>
+                            <input type="text" id="coupon-code" placeholder="Promo (ej. WETZELS20)">
+                            <button class="btn-text" onclick="app.applyCoupon()">Aplicar</button>
+                        </div>
+                        
+                        <h3 class="section-title mt-4">Pago Rápido</h3>
+                        <div class="checkout-wallets">
+                            <button class="btn-apple-pay" onclick="app.placeOrder()">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay">
+                            </button>
+                            <button class="btn-google-pay" onclick="app.placeOrder()">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay">
+                            </button>
+                        </div>
+                        
+                        <div class="divider mt-4">o usa tu tarjeta guardada</div>
+
+                        <div class="payment-method">
+                            <span class="material-symbols-rounded">credit_card</span>
+                            <div>
+                                <h4>Tarjeta terminada en •••• 4242</h4>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary floating-btn" onclick="app.placeOrder()" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.2rem; font-size: 0.95rem;">
+                            <span style="display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; font-weight: 700;"><span class="material-symbols-rounded">lock</span> Pagar Seguro</span>
+                            <span style="font-weight: 800; font-size: 1.05rem;">$<span id="checkout-total">0.00</span></span>
+                        </button>
+                    </div>
+
+                    <!-- Step 6: Delivery/Tracker -->
+                    <div id="step-delivery" class="step-container hidden p-0">
+                        <div class="map-bg">
+                            <div class="tracker-card glass">
+                                <h2>Orden Confirmada</h2>
+                                <p class="text-muted">Orden #WP-8492</p>
+                                
+                                <div class="status-tracker mt-4">
+                                    <div class="status-step active" id="status-1">
+                                        <div class="dot"></div> Preparando
+                                    </div>
+                                    <div class="status-step" id="status-2">
+                                        <div class="dot"></div> Horneando
+                                    </div>
+                                    <div class="status-step" id="status-3">
+                                        <div class="dot"></div> En camino / Listo
+                                    </div>
+                                </div>
+                                
+                                <div class="agent-chat mt-4">
+                                    <div class="chat-header">
+                                        <span class="material-symbols-rounded">support_agent</span>
+                                        <span>Copiloto de IA Wetzel's</span>
+                                    </div>
+                                    <div class="chat-messages" id="agent-messages">
+                                        <div class="msg bot">¡Hola! Tu orden está preparándose y estará lista en aprox. 15-20 min. ¿Necesitas hacer algún cambio de última hora?</div>
+                                    </div>
+                                    <div class="chat-input-box">
+                                        <input type="text" id="agent-input" placeholder="Ej. Llegaré tarde...">
+                                        <button onclick="app.sendAgentMessage()"><span class="material-symbols-rounded">send</span></button>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-outline mt-4" onclick="app.reset()">Nueva Orden</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step: Rewards -->
+                    <div id="step-rewards" class="step-container hidden">
+                        <div class="header-back">
+                            <span class="material-symbols-rounded" onclick="app.showStep('home')">arrow_back</span>
+                            <h2>Mis Rewards</h2>
+                        </div>
+                        
+                        <div class="rewards-card">
+                            <div class="rewards-points">
+                                <h2>1,250</h2>
+                                <p>Puntos Disponibles</p>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 83%;"></div>
+                            </div>
+                            <p style="text-align: center; font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;">¡Faltan 250 pts para un Pretzel Gratis!</p>
+                        </div>
+                        
+                        <div class="qr-box mt-4" style="background: white; border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 1rem auto; max-width: 250px;">
+                            <h4 style="margin: 0 0 1rem 0; font-size: 1rem; color: var(--w-blue-dark); line-height: 1.2;">Escanea en tienda para sumar/canjear</h4>
+                            <div class="qr-placeholder" style="display: flex; justify-content: center; align-items: center; background: white; padding: 0.5rem; border-radius: 8px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=WETZELS-1250" alt="QR Code" style="width: 150px; height: 150px; display: block; margin: 0 auto; object-fit: contain;">
+                            </div>
+                            <p class="text-muted" style="font-size: 0.75rem; margin: 1rem 0 0 0; font-weight: 600;">Token dinámico: Actualizando en 0:45s</p>
+                        </div>
+                        
+                        <h3 class="section-title mt-4">Recompensas</h3>
+                        <div class="coupon-box mb-3" style="justify-content: space-between; overflow: hidden; background-color: var(--w-yellow); background-image: url('patternYellowPretzels.webp'); background-size: 100px; border: 2px solid var(--w-yellow-dark);">
+                            <div style="display:flex; align-items:center; gap:0.5rem; flex: 1; min-width: 0;">
+                                <div class="menu-icon" style="font-size: 1.5rem; margin:0; background: white; border: 2px solid var(--w-yellow-dark);">🥤</div>
+                                <div style="flex: 1; min-width: 0;">
+                                    <h4 style="font-size: 1rem; margin:0; line-height:1.1; color: var(--w-blue-dark); font-weight: 800;">Limonada Ch</h4>
+                                    <p style="font-size: 0.75rem; margin:0; margin-top: 4px; color: var(--w-blue-dark); font-weight: 600; opacity: 0.8;">1,000 pts</p>
+                                </div>
+                            </div>
+                            <span style="background: var(--w-blue-dark); color: white; border-radius: 20px; font-weight: 700; padding: 0.4rem 0.8rem; font-size: 0.75rem; white-space: nowrap; margin-left: 0.5rem; flex-shrink: 0; box-shadow: 0 4px 0 rgba(0,0,0,0.3); cursor: pointer;" onclick="app.redeemReward(this, 'Limonada Ch', 1000)">Canjear</span>
+                        </div>
+                        
+                        <div class="coupon-box" style="justify-content: space-between; overflow: hidden; opacity: 0.7;">
+                            <div style="display:flex; align-items:center; gap:0.5rem; flex: 1; min-width: 0;">
+                                <div class="menu-icon" style="font-size: 1.5rem; margin:0;">🥨</div>
+                                <div style="flex: 1; min-width: 0;">
+                                    <h4 style="font-size: 0.95rem; margin:0; line-height:1.1;">Classic Pretzel</h4>
+                                    <p style="font-size: 0.75rem; margin:0; margin-top: 4px;" class="text-muted">1,500 pts</p>
+                                </div>
+                            </div>
+                            <span style="background: transparent; border: 2px solid var(--w-text-muted); color: var(--w-text-muted); border-radius: 20px; font-weight: 700; padding: 0.3rem 0.6rem; font-size: 0.75rem; white-space: nowrap; margin-left: 0.5rem; flex-shrink: 0;">Bloqueado</span>
+                        </div>
+                    </div>
+
+                    <!-- Step: Orders History -->
+                    <div id="step-orders" class="step-container hidden">
+                        <div class="header">
+                            <h2>Mis Órdenes</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="menu-card" onclick="app.showStep('order-details')" style="flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <h4 style="margin: 0; font-size: 1.1rem;">Orden #WP-8392</h4>
+                                    <span style="color: #64748B; font-size: 0.9rem;">Hoy, 14:30 PM • Entregado</span>
+                                </div>
+                                <span style="font-weight: 700;">$185.00</span>
+                            </div>
+                            <div class="menu-card" onclick="app.showStep('order-details')" style="flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 1rem; opacity: 0.7; cursor:pointer;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <h4 style="margin: 0; font-size: 1.1rem;">Orden #WP-7104</h4>
+                                    <span style="color: #64748B; font-size: 0.9rem;">12 Oct 2026 • Pickup</span>
+                                </div>
+                                <span style="font-weight: 700;">$140.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step: Order Details -->
+                    <div id="step-order-details" class="step-container hidden">
+                        <div class="header" style="justify-content: flex-start; gap: 1rem;">
+                            <span class="material-symbols-rounded" onclick="app.showStep('orders')" style="cursor:pointer;">arrow_back</span>
+                            <h2>Detalle de Orden</h2>
+                        </div>
+                        <div class="p-4">
+                            <h3 id="detail-order-id" style="text-align: center; color: var(--w-blue); margin-bottom: 1rem;">#WP-8392</h3>
+                            <div class="summary-item mt-4" style="display:flex; justify-content:space-between; margin-bottom:0.5rem;"><strong>🥨 Wetzel Bitz</strong> <span>$75.00</span></div>
+                            <div class="summary-item" style="display:flex; justify-content:space-between; margin-bottom:0.5rem;"><strong>✨ Sinful Cinnamon</strong> <span>$70.00</span></div>
+                            <div class="summary-item" style="display:flex; justify-content:space-between; margin-bottom:1rem;"><strong>🥤 Limonada Fresca</strong> <span>$40.00</span></div>
+                            <div class="summary-item total" style="display:flex; justify-content:space-between; border-top: 2px solid #E2E8F0; padding-top:1rem; font-size:1.1rem;"><strong>Total Pagado</strong> <strong>$185.00</strong></div>
+                            
+                            <button class="btn btn-primary mt-4" style="width: 100%;" onclick="app.showStep('orders')">Volver a mis órdenes</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Dashboard God Mode (Hidden by default) -->
+                <div id="dashboard-content" class="app-content hidden" style="background: #0f172a; color: white;">
+                    <div class="header-back" style="padding: 1.5rem 1.5rem 0;">
+                        <span class="material-symbols-rounded" onclick="app.toggleGodMode()" style="font-size: 2.2rem; background: transparent; box-shadow: none; color: white; padding: 0;">close</span>
+                        <h2 style="color: white; font-size: 1.4rem;">Product Analytics</h2>
+                    </div>
+                    <div class="dashboard-grid" style="padding: 1.5rem;">
+                        <div class="metric-card">
+                            <p>Tasa de Conversión</p>
+                            <h3>14.2% <span style="color: #10b981; font-size: 0.8rem;">↑ 2.1%</span></h3>
+                        </div>
+                        <div class="metric-card mt-2">
+                            <p>Ticket Promedio (AOV)</p>
+                            <h3>$85.50 <span style="color: #10b981; font-size: 0.8rem;">↑ $15.00</span></h3>
+                            <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Impacto de Smart Upsells</p>
+                        </div>
+                        <div class="metric-card mt-2">
+                            <p>Abandono de Carrito</p>
+                            <h3>12% <span style="color: #10b981; font-size: 0.8rem;">↓ 40%</span></h3>
+                            <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;">Impacto de Apple Pay</p>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h4 style="color: #cbd5e1; margin-bottom: 0.5rem;">Top Ventas en Tiempo Real</h4>
+                            <div style="background: #1e293b; padding: 1rem; border-radius: 8px; font-size: 0.85rem;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;"><span>🥨 Original</span> <span>420 hoy</span></div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;"><span>🌶️ Jalapeño Cheese</span> <span>210 hoy <span style="color:#ef4444">(Stock Bajo)</span></span></div>
+                                <div style="display:flex; justify-content:space-between;"><span>🧀 Cheddar Dip</span> <span style="color: #f59e0b;">+150 (Vía Upsell)</span></div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary mt-4" style="background: #10b981; color: white;" onclick="app.toggleGodMode()">Volver a Modo Usuario</button>
+                    </div>
+
+
+                </div>
+                <!-- Bottom Nav -->
+                <div class="bottom-nav">
+                    <div class="nav-item active" onclick="app.showStep('home')">
+                        <span class="material-symbols-rounded">home</span>
+                        <span>Inicio</span>
+                    </div>
+                    <div class="nav-item" onclick="app.showStep('orders')">
+                        <span class="material-symbols-rounded">receipt_long</span>
+                        <span>Órdenes</span>
+                    </div>
+                    <div class="nav-item" onclick="app.showRewards()">
+                        <span class="material-symbols-rounded">stars</span>
+                        <span>Rewards</span>
+                    </div>
+                    <div class="nav-item" onclick="app.showStep('menu')">
+                        <span class="material-symbols-rounded">menu_book</span>
+                        <span>Menú</span>
+                    </div>
+                </div>
+
+                <!-- Side Menu Drawer -->
+                <div id="side-menu" class="side-menu hidden">
+                    <div class="side-menu-content">
+                        <div class="side-menu-header">
+                            <h3>Ajustes</h3>
+                            <span class="material-symbols-rounded" onclick="app.toggleSideMenu()">close</span>
+                        </div>
+                        <div class="side-menu-items">
+                            <div class="menu-row"><span class="material-symbols-rounded">person</span> Mi Perfil</div>
+                            <div class="menu-row"><span class="material-symbols-rounded">location_on</span> Mis Direcciones</div>
+                            <div class="menu-row"><span class="material-symbols-rounded">credit_card</span> Métodos de Pago</div>
+                            <div class="menu-row"><span class="material-symbols-rounded">support_agent</span> Soporte</div>
+                            <div style="flex: 1;"></div>
+                            <div class="menu-row text-blue" onclick="app.toggleSideMenu(); app.showStep('login')"><span class="material-symbols-rounded">logout</span> Cerrar Sesión</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Technical Console Panel -->
+        <aside class="console-panel">
+            <div class="console-header">
+                <div class="console-title">
+                    <span class="material-symbols-rounded icon-small">terminal</span> 
+                    <h3>Log de Sistemas (Cloud & API)</h3>
+                </div>
+                <div class="pulse-indicator">
+                    <span class="pulse-dot"></span> LIVE
+                </div>
+            </div>
+            <div class="console-metrics">
+                <div class="metric"><span class="label">API LATENCY:</span> <span class="val">42ms</span></div>
+                <div class="metric"><span class="label">SERVER:</span> <span class="val">AWS us-east-1</span></div>
+            </div>
+            <div class="console-body" id="console-output">
+                <div class="log-entry system">[SYSTEM] Inicializando entorno de demostración Wetzel's Pretzels...</div>
+                <div class="log-entry system">[SYSTEM] Conexión establecida con GraphQL Gateway.</div>
+                <div class="log-entry system">[SYSTEM] Esperando interacciones de usuario...</div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="app.js"></script>
+    <!-- QR Reward Modal -->
+    <div id="qr-modal" style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;">
+        <div style="background: white; border-radius: 24px; padding: 2rem; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <h3 style="color: var(--w-blue-dark); font-weight: 800; font-size: 1.4rem; margin-top: 0; margin-bottom: 0.5rem;" id="qr-modal-title">¡Recompensa Lista!</h3>
+            <p style="color: var(--w-text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; font-weight: 600;">Muestra este código al cajero en la sucursal para recibir tu <span id="qr-modal-item" style="color: var(--w-yellow-dark); font-weight: 800;">Limonada Ch</span> gratis.</p>
+            
+            <div style="background: white; border: 4px solid var(--w-yellow); border-radius: 16px; padding: 1rem; display: inline-block; margin-bottom: 1.5rem;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=WETZELS-REWARD-12345" alt="QR Code" style="width: 150px; height: 150px; display: block;">
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; font-size: 1rem;" onclick="app.closeQrModal()">Entendido</button>
+        </div>
+    </div>
+</body>
+</html>

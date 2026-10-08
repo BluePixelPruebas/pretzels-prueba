@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: #06080F; color: #E8ECF5; font-family: Archivo, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #6E9BFF; text-decoration: none; }
+  a:hover { color: #A9C4FF; }
+  ::selection { background: #1F5BFF; color: #fff; }
+  @keyframes bpFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+</style>
+</helmet>
+
+<div style="width: 100%; background: #06080F; padding-bottom: 0;">
+
+  <div style="position: fixed; top: 0; left: 0; height: 2px; width: 100%; background: rgba(255,255,255,0.06); z-index: 60;">
+    <div ref="{{ barRef }}" style="height: 100%; width: 0%; background: linear-gradient(90deg, #1F5BFF, #4FD8FF);"></div>
+  </div>
+
+  <header style="position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px); background: rgba(6,8,15,0.82); border-bottom: 1px solid rgba(255,255,255,0.07);">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 14px 40px; display: flex; align-items: center; gap: 32px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-right: auto;">
+        <div style="width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #1F5BFF, #4FD8FF);"></div>
+        <span style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em;">Bluepixel</span>
+        <span style="font-family: 'DM Mono', monospace; font-size: 11px; color: #6B7488; letter-spacing: 0.08em; text-transform: uppercase; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12);">Caso de éxito</span>
+      </div>
+      <nav style="display: flex; gap: 24px; font-size: 13px; color: #97A0B5;">
+        <a href="#reto" style="color: #97A0B5;">Reto</a>
+        <a href="#solucion" style="color: #97A0B5;">Solución</a>
+        <a href="#transformacion" style="color: #97A0B5;">Transformación</a>
+        <a href="#resultados" style="color: #97A0B5;">Resultados</a>
+      </nav>
+      <a href="#cta" style="font-size: 13px; font-weight: 500; color: #fff; background: #1F5BFF; padding: 9px 18px; border-radius: 999px;" style-hover="background: #3D72FF;">Habla con nuestro equipo</a>
+    </div>
+  </header>
+
+  <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+  <section style="max-width: 1240px; margin: 0 auto; padding: 72px 40px 8px;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">00 · Lectura del sistema actual</div>
+    <h1 style="font-size: 44px; line-height: 1.06; letter-spacing: -0.03em; font-weight: 600; margin: 0 0 20px; max-width: 20ch;">Plantilla de Case Study, nativa al ecosistema Bluepixel</h1>
+    <p style="font-size: 17px; line-height: 1.6; color: #97A0B5; max-width: 68ch; margin: 0 0 40px; text-wrap: pretty;">Este documento es el wireframe conceptual navegable de la plantilla. Todo el contenido está en placeholders — ninguna métrica, nombre o dato es real. Las tarjetas azules son notas de construcción: componente recomendado, contenido a recopilar y assets necesarios. Se pueden ocultar desde los tweaks para revisar la página limpia.</p>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 24px; background: linear-gradient(180deg, rgba(31,91,255,0.07), rgba(255,255,255,0.01));">
+        <div style="font-family: 'DM Mono', monospace; font-size: 11px; color: #4FD8FF; letter-spacing: 0.1em; margin-bottom: 14px;">QUÉ IDENTIFIQUÉ</div>
+        <ul style="margin: 0; padding-left: 18px; color: #B8C0D0; font-size: 14px; line-height: 1.75;">
+          <li>Base oscura con azul eléctrico como único acento de acción</li>
+          <li>Titulares grandes de peso medio, tracking negativo, subtítulo gris en dos líneas</li>
+          <li>Etiquetas cortas tipo <em>UX/UI • Data • Desarrollo</em> como firma de servicios</li>
+          <li>Cards con borde suave y video/mockup a sangre; carruseles horizontales</li>
+          <li>Métricas grandes sueltas (#1, +X años) sin adorno</li>
+          <li>Tono ejecutivo: negocio y ROI antes que funcionalidades</li>
+        </ul>
+      </div>
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 24px; background: linear-gradient(180deg, rgba(31,91,255,0.07), rgba(255,255,255,0.01));">
+        <div style="font-family: 'DM Mono', monospace; font-size: 11px; color: #4FD8FF; letter-spacing: 0.1em; margin-bottom: 14px;">QUÉ REUTILIZO</div>
+        <ul style="margin: 0; padding-left: 18px; color: #B8C0D0; font-size: 14px; line-height: 1.75;">
+          <li>Escala tipográfica y jerarquía del hero de home</li>
+          <li>Pill de servicios como taxonomía del proyecto</li>
+          <li>Card con borde + media a sangre para screenshots y mockups</li>
+          <li>Botón pill azul relleno + link con flecha como secundario</li>
+          <li>Bloque de números del home, reinterpretado como resultados</li>
+          <li>Cierre de contacto con el mismo peso que el sitio</li>
+        </ul>
+      </div>
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 24px; background: linear-gradient(180deg, rgba(31,91,255,0.07), rgba(255,255,255,0.01));">
+        <div style="font-family: 'DM Mono', monospace; font-size: 11px; color: #4FD8FF; letter-spacing: 0.1em; margin-bottom: 14px;">QUÉ ADAPTO PARA CASE STUDY</div>
+        <ul style="margin: 0; padding-left: 18px; color: #B8C0D0; font-size: 14px; line-height: 1.75;">
+          <li>Nav secundario pegajoso + barra de progreso: la página es una historia, no un menú</li>
+          <li>Snapshot en línea bajo el hero para escaneo en 10 segundos</li>
+          <li>Ritmo alternado: bloque narrativo → bloque visual, sin dos textos seguidos</li>
+          <li>Antes/Después como comparativa controlada, no galería</li>
+          <li>Un solo cambio de fondo (sección de resultados) en toda la página</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <section data-screen-label="A · Hero" style="max-width: 1240px; margin: 0 auto; padding: 96px 40px 0;">
+    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
+      <a href="#" style="font-family: 'DM Mono', monospace; font-size: 12px; color: #6B7488;">Casos de éxito</a>
+      <span style="color: #333C50;">/</span>
+      <span style="font-family: 'DM Mono', monospace; font-size: 12px; color: #97A0B5;">[NOMBRE DEL CLIENTE]</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: end;">
+      <div>
+        <div style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 22px;">[INDUSTRIA] · [TIPO DE PROYECTO]</div>
+        <h1 style="font-size: 60px; line-height: 1.03; letter-spacing: -0.035em; font-weight: 600; margin: 0 0 24px; text-wrap: balance;">[TITULAR DE VALOR: EL RESULTADO DEL PROYECTO EN UNA FRASE]</h1>
+        <p style="font-size: 18px; line-height: 1.6; color: #97A0B5; margin: 0 0 32px; max-width: 54ch; text-wrap: pretty;">[DESCRIPCIÓN DEL PROYECTO — 2 a 3 líneas: qué construimos, para quién y con qué propósito de negocio.]</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px;">
+          <span style="font-size: 13px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 14px;">[SERVICIO 1]</span>
+          <span style="font-size: 13px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 14px;">[SERVICIO 2]</span>
+          <span style="font-size: 13px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 14px;">[SERVICIO 3]</span>
+          <span style="font-size: 13px; color: #C6CEDC; border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 7px 14px;">[SERVICIO 4]</span>
+        </div>
+      </div>
+      <div style="border-left: 2px solid #1F5BFF; padding-left: 28px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: #6B7488; margin-bottom: 12px;">RESULTADO PRINCIPAL</div>
+        <div style="font-size: 76px; line-height: 0.92; letter-spacing: -0.04em; font-weight: 600; background: linear-gradient(120deg, #FFFFFF 30%, #4FD8FF); -webkit-background-clip: text; background-clip: text; color: transparent;">[MÉTRICA 1]</div>
+        <div style="font-size: 15px; color: #97A0B5; margin-top: 14px; line-height: 1.5;">[QUÉ MIDE ESA MÉTRICA Y EN QUÉ PERIODO]</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 56px; border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; background: linear-gradient(160deg, rgba(31,91,255,0.14), rgba(79,216,255,0.05) 45%, rgba(255,255,255,0.015)); aspect-ratio: 16 / 8; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; overflow: hidden;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.12em; color: #8FB4FF;">[VISUAL PRINCIPAL DEL PROYECTO]</div>
+      <div style="font-size: 14px; color: #6B7488; max-width: 46ch; text-align: center; line-height: 1.6;">Mockup del producto en contexto (desktop + móvil) o video loop de 6–10 s, mudo, a sangre. Mismo tratamiento que las cards de “Nuestro trabajo”.</div>
+    </div>
+
+    <div style="margin-top: 20px; border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; display: grid; grid-template-columns: repeat(5, 1fr); overflow: hidden;">
+      <div style="padding: 22px 24px; border-right: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 8px;">CLIENTE</div>
+        <div style="font-size: 15px; color: #E8ECF5;">[CLIENTE]</div>
+      </div>
+      <div style="padding: 22px 24px; border-right: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 8px;">INDUSTRIA</div>
+        <div style="font-size: 15px; color: #E8ECF5;">[INDUSTRIA]</div>
+      </div>
+      <div style="padding: 22px 24px; border-right: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 8px;">SERVICIOS</div>
+        <div style="font-size: 15px; color: #E8ECF5;">[SERVICIOS]</div>
+      </div>
+      <div style="padding: 22px 24px; border-right: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 8px;">TIMELINE</div>
+        <div style="font-size: 15px; color: #E8ECF5;">[X MESES]</div>
+      </div>
+      <div style="padding: 22px 24px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 8px;">EQUIPO</div>
+        <div style="font-size: 15px; color: #E8ECF5;">[X PERSONAS]</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Hero split asimétrico + tira Snapshot de 5 celdas + media a sangre 16:8.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Cliente, industria, tipo de proyecto, 3–4 servicios, descripción de 2 líneas, la métrica estrella y su periodo, permiso de uso de marca.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Mockup hero 2400×1200, logo del cliente en SVG, video loop opcional &lt;3 MB.</div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section id="reto" data-screen-label="B · Reto" style="max-width: 1240px; margin: 0 auto; padding: 120px 40px 0;">
+    <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 72px;">
+      <div>
+        <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">01 · Contexto y reto</div>
+        <h2 style="font-size: 40px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 600; margin: 0 0 20px;">[EL RETO EN UNA FRASE DE NEGOCIO]</h2>
+        <p style="font-size: 16px; line-height: 1.7; color: #97A0B5; margin: 0;">[QUIÉN ES EL CLIENTE Y CONTEXTO DEL NEGOCIO — 3 a 4 líneas. Tamaño, mercado, momento en el que llegan a Bluepixel.]</p>
+      </div>
+      <div style="display: grid; gap: 16px;">
+        <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 26px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 10px;">SITUACIÓN INICIAL</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC;">[CÓMO OPERABA EL CLIENTE ANTES — plataforma, procesos, herramientas.]</div>
+        </div>
+        <div style="border: 1px solid rgba(255,255,255,0.16); border-radius: 16px; padding: 26px; background: rgba(31,91,255,0.08);">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #8FB4FF; margin-bottom: 10px;">PROBLEMA PRINCIPAL</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #E8ECF5;">[PROBLEMA PRINCIPAL — el dolor concreto y su costo para el negocio.]</div>
+        </div>
+        <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 26px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 10px;">OPORTUNIDAD IDENTIFICADA</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC;">[QUÉ VIMOS QUE PODÍA CAMBIAR y por qué valía la inversión.]</div>
+        </div>
+      </div>
+    </div>
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Narrativa a la izquierda + stack de 3 cards escalonadas (la del problema resaltada en azul).</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Contexto de negocio, situación inicial medible si existe, problema con su costo, oportunidad. Máximo 120 palabras en total.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Opcional: captura del estado anterior o diagrama del flujo original.</div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section id="solucion" data-screen-label="C · Solución" style="max-width: 1240px; margin: 0 auto; padding: 120px 40px 0;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">02 · La solución</div>
+    <div style="display: flex; align-items: end; justify-content: space-between; gap: 48px; margin-bottom: 44px;">
+      <h2 style="font-size: 40px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 600; margin: 0; max-width: 22ch;">[QUÉ HIZO BLUEPIXEL]</h2>
+      <p style="font-size: 16px; line-height: 1.7; color: #97A0B5; margin: 0; max-width: 46ch;">[ENFOQUE GENERAL — 2 líneas: cómo abordamos el reto y qué capacidades entraron.]</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 26px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 22px; color: #1F5BFF; margin-bottom: 16px;">01</div>
+        <div style="font-size: 17px; font-weight: 500; margin-bottom: 10px;">[SOLUCIÓN 1]</div>
+        <div style="font-size: 14px; line-height: 1.65; color: #97A0B5;">[QUÉ IMPLEMENTAMOS Y PARA QUÉ SIRVIÓ.]</div>
+      </div>
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 26px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 22px; color: #1F5BFF; margin-bottom: 16px;">02</div>
+        <div style="font-size: 17px; font-weight: 500; margin-bottom: 10px;">[SOLUCIÓN 2]</div>
+        <div style="font-size: 14px; line-height: 1.65; color: #97A0B5;">[QUÉ IMPLEMENTAMOS Y PARA QUÉ SIRVIÓ.]</div>
+      </div>
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 26px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 22px; color: #1F5BFF; margin-bottom: 16px;">03</div>
+        <div style="font-size: 17px; font-weight: 500; margin-bottom: 10px;">[SOLUCIÓN 3]</div>
+        <div style="font-size: 14px; line-height: 1.65; color: #97A0B5;">[QUÉ IMPLEMENTAMOS Y PARA QUÉ SIRVIÓ.]</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px;">
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; background: linear-gradient(150deg, rgba(255,255,255,0.04), rgba(31,91,255,0.06)); aspect-ratio: 16 / 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #8FB4FF;">[SCREENSHOT CLAVE DEL PRODUCTO]</div>
+        <div style="font-size: 13px; color: #6B7488; max-width: 34ch; text-align: center; line-height: 1.6;">Pantalla principal con dato real anonimizado. Una sola, la más representativa.</div>
+      </div>
+      <div style="display: grid; gap: 16px;">
+        <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; background: rgba(255,255,255,0.025); display: flex; align-items: center; justify-content: center;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: #6B7488;">[DIAGRAMA DE FLUJO / ARQUITECTURA]</div>
+        </div>
+        <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 26px; background: rgba(255,255,255,0.025);">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 12px;">DECISIONES CLAVE</div>
+          <div style="font-size: 14px; line-height: 1.8; color: #C6CEDC;">01 — [DECISIÓN Y POR QUÉ]<br />02 — [DECISIÓN Y POR QUÉ]<br />03 — [DECISIÓN Y POR QUÉ]</div>
+        </div>
+      </div>
+    </div>
+
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">3 cards numeradas + mosaico visual asimétrico (screenshot grande, diagrama, lista de decisiones).</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">3 soluciones implementadas (no features), 3 decisiones de proyecto con su razón, servicios involucrados.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">2–3 screenshots limpios 1600×1000, diagrama de flujo o arquitectura vectorial, mockup móvil si aplica.</div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section id="transformacion" data-screen-label="D · Transformación" style="max-width: 1240px; margin: 0 auto; padding: 120px 40px 0;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">03 · Transformación</div>
+    <h2 style="font-size: 40px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 600; margin: 0 0 12px; max-width: 24ch;">Antes y después</h2>
+    <p style="font-size: 16px; line-height: 1.7; color: #97A0B5; margin: 0 0 40px; max-width: 58ch;">[QUÉ CAMBIÓ EN LA EXPERIENCIA Y EN LA OPERACIÓN — 2 líneas que preparan la comparativa.]</p>
+
+    <sc-if value="{{ splitView }}" hint-placeholder-val="{{ true }}">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; overflow: hidden;">
+          <div style="padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #6B7488;">ANTES</span>
+            <span style="font-size: 12px; color: #6B7488;">[FECHA / VERSIÓN]</span>
+          </div>
+          <div style="aspect-ratio: 4 / 3; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 12px; color: #6B7488;">[SCREENSHOT ESTADO ANTERIOR]</div>
+          <div style="padding: 22px 24px; font-size: 14px; line-height: 1.8; color: #97A0B5;">— [FRICCIÓN 1]<br />— [FRICCIÓN 2]<br />— [FRICCIÓN 3]</div>
+        </div>
+        <div style="border: 1px solid rgba(79,216,255,0.28); border-radius: 20px; overflow: hidden; background: linear-gradient(180deg, rgba(31,91,255,0.09), rgba(255,255,255,0.01));">
+          <div style="padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,0.09); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #4FD8FF;">DESPUÉS</span>
+            <span style="font-size: 12px; color: #8FB4FF;">[FECHA / VERSIÓN]</span>
+          </div>
+          <div style="aspect-ratio: 4 / 3; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 12px; color: #8FB4FF;">[SCREENSHOT ESTADO NUEVO]</div>
+          <div style="padding: 22px 24px; font-size: 14px; line-height: 1.8; color: #C6CEDC;">— [MEJORA 1]<br />— [MEJORA 2]<br />— [MEJORA 3]</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ toggleView }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display: inline-flex; padding: 4px; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; margin-bottom: 20px; gap: 4px;">
+          <button onClick="{{ showBefore }}" style="{{ beforeBtnStyle }}">Antes</button>
+          <button onClick="{{ showAfter }}" style="{{ afterBtnStyle }}">Después</button>
+        </div>
+        <div style="border: 1px solid rgba(255,255,255,0.11); border-radius: 20px; overflow: hidden;">
+          <div style="aspect-ratio: 16 / 9; background: rgba(255,255,255,0.025); display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center;">
+            <div style="font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.12em; color: #8FB4FF;">{{ stateLabel }}</div>
+            <div style="font-size: 13px; color: #6B7488;">[SCREENSHOT COMPARATIVO — misma pantalla, mismo encuadre]</div>
+          </div>
+          <div style="padding: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 14px; line-height: 1.7; color: #97A0B5;">
+            <div>[PUNTO 1 DEL ESTADO MOSTRADO]</div>
+            <div>[PUNTO 2 DEL ESTADO MOSTRADO]</div>
+            <div>[PUNTO 3 DEL ESTADO MOSTRADO]</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="margin-top: 16px; border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; display: grid; grid-template-columns: repeat(3, 1fr); overflow: hidden;">
+      <div style="padding: 26px; border-right: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 12px;">EXPERIENCIA</div>
+        <div style="font-size: 15px; color: #C6CEDC; line-height: 1.6;">[CÓMO CAMBIÓ LA EXPERIENCIA DEL USUARIO]</div>
+      </div>
+      <div style="padding: 26px; border-right: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 12px;">PROCESO</div>
+        <div style="font-size: 15px; color: #C6CEDC; line-height: 1.6;">[CÓMO CAMBIÓ EL PROCESO INTERNO]</div>
+      </div>
+      <div style="padding: 26px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 12px;">PLATAFORMA</div>
+        <div style="font-size: 15px; color: #C6CEDC; line-height: 1.6;">[CÓMO EVOLUCIONÓ LA PLATAFORMA]</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Comparativa antes/después (split o switch, según tweak) + tira de 3 ejes de cambio.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">3 fricciones del estado anterior, 3 mejoras equivalentes, cambio en experiencia / proceso / plataforma.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Pareja de screenshots del mismo flujo, mismo encuadre y zoom. Es el asset más difícil de conseguir después: pedirlo antes de tocar el producto.</div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section id="resultados" data-screen-label="E · Resultados" style="margin-top: 120px; background: linear-gradient(180deg, #0A1024, #06080F 70%); border-top: 1px solid rgba(255,255,255,0.07); border-bottom: 1px solid rgba(255,255,255,0.07);">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 100px 40px;">
+      <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">04 · Resultados</div>
+      <div style="display: flex; align-items: end; justify-content: space-between; gap: 48px; margin-bottom: 48px;">
+        <h2 style="font-size: 40px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 600; margin: 0; max-width: 24ch;">Impacto medible en el negocio</h2>
+        <p style="font-size: 14px; color: #6B7488; margin: 0; max-width: 40ch; line-height: 1.6;">[FUENTE Y PERIODO DE MEDICIÓN — ej. datos de plataforma, primer semestre post-lanzamiento.]</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat({{ metricCols }}, 1fr); gap: 16px; margin-bottom: 16px;">
+        <div style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 30px 26px; background: rgba(255,255,255,0.02);">
+          <div style="font-size: 46px; line-height: 1; letter-spacing: -0.03em; font-weight: 600; color: #fff;">[+X%]</div>
+          <div style="font-size: 14px; color: #97A0B5; margin-top: 14px; line-height: 1.5;">[MÉTRICA 1 — CONVERSIÓN]</div>
+        </div>
+        <div style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 30px 26px; background: rgba(255,255,255,0.02);">
+          <div style="font-size: 46px; line-height: 1; letter-spacing: -0.03em; font-weight: 600; color: #fff;">[-X%]</div>
+          <div style="font-size: 14px; color: #97A0B5; margin-top: 14px; line-height: 1.5;">[MÉTRICA 2 — TIEMPO DE PROCESO]</div>
+        </div>
+        <div style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 30px 26px; background: rgba(255,255,255,0.02);">
+          <div style="font-size: 46px; line-height: 1; letter-spacing: -0.03em; font-weight: 600; color: #fff;">[+X%]</div>
+          <div style="font-size: 14px; color: #97A0B5; margin-top: 14px; line-height: 1.5;">[MÉTRICA 3 — USUARIOS ACTIVOS]</div>
+        </div>
+        <sc-if value="{{ showMetric4 }}" hint-placeholder-val="{{ true }}">
+          <div style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 30px 26px; background: rgba(255,255,255,0.02);">
+            <div style="font-size: 46px; line-height: 1; letter-spacing: -0.03em; font-weight: 600; color: #fff;">[X HRS]</div>
+            <div style="font-size: 14px; color: #97A0B5; margin-top: 14px; line-height: 1.5;">[MÉTRICA 4 — HORAS AHORRADAS]</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showMetric5 }}" hint-placeholder-val="{{ false }}">
+          <div style="border: 1px solid rgba(255,255,255,0.11); border-radius: 18px; padding: 30px 26px; background: rgba(255,255,255,0.02);">
+            <div style="font-size: 46px; line-height: 1; letter-spacing: -0.03em; font-weight: 600; color: #fff;">[-X%]</div>
+            <div style="font-size: 14px; color: #97A0B5; margin-top: 14px; line-height: 1.5;">[MÉTRICA 5 — ERRORES]</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="border: 1px dashed rgba(255,255,255,0.16); border-radius: 18px; padding: 30px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 18px;">BENEFICIOS CUALITATIVOS</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; font-size: 15px; line-height: 1.65; color: #C6CEDC;">
+          <div>[BENEFICIO CUALITATIVO 1]</div>
+          <div>[BENEFICIO CUALITATIVO 2]</div>
+          <div>[BENEFICIO CUALITATIVO 3]</div>
+        </div>
+      </div>
+
+      <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+          <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Grid de 3–5 metric cards (número dominante) + bloque punteado separado para lo cualitativo. Único cambio de fondo de la página: marca el clímax.</div></div>
+          <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">3–5 métricas con valor, unidad, línea base, periodo y fuente. Aprobación del cliente para publicarlas. 3 beneficios no numéricos.</div></div>
+          <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Export de dashboard o gráfica de tendencia (opcional, solo si el dato es publicable).</div></div>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <section data-screen-label="F · Impacto" style="max-width: 1240px; margin: 0 auto; padding: 110px 40px 0;">
+    <div style="display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 72px;">
+      <div>
+        <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">05 · Qué cambió</div>
+        <h2 style="font-size: 36px; line-height: 1.12; letter-spacing: -0.03em; font-weight: 600; margin: 0;">[QUÉ SIGNIFICARON ESTOS RESULTADOS PARA EL NEGOCIO]</h2>
+      </div>
+      <div style="display: grid; gap: 2px; border-top: 1px solid rgba(255,255,255,0.09);">
+        <div style="padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.09); display: grid; grid-template-columns: 180px 1fr; gap: 24px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #6B7488;">EN EL NEGOCIO</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC;">[QUÉ CAMBIÓ EN INGRESOS, COSTOS O CAPACIDAD.]</div>
+        </div>
+        <div style="padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.09); display: grid; grid-template-columns: 180px 1fr; gap: 24px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #6B7488;">EN LA OPERACIÓN</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC;">[QUÉ PROCESOS MEJORARON Y PARA QUIÉN.]</div>
+        </div>
+        <div style="padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.09); display: grid; grid-template-columns: 180px 1fr; gap: 24px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #6B7488;">NUEVAS OPORTUNIDADES</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC;">[QUÉ SE HABILITÓ PARA LOS SIGUIENTES 12 MESES.]</div>
+        </div>
+        <div style="padding: 24px 0; display: grid; grid-template-columns: 180px 1fr; gap: 24px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #6B7488;">SIGUIENTE FASE</div>
+          <div style="font-size: 16px; line-height: 1.65; color: #C6CEDC;">[EN QUÉ SEGUIMOS TRABAJANDO CON EL CLIENTE.]</div>
+        </div>
+      </div>
+    </div>
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Lista de definición (etiqueta + párrafo), sin cards: baja el ritmo visual antes del testimonio.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Una frase por eje. Conectar cada métrica de la sección anterior con su consecuencia real.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Ninguno. Sección deliberadamente sin imagen.</div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section data-screen-label="G · Testimonio" style="max-width: 1240px; margin: 0 auto; padding: 110px 40px 0;">
+    <div style="border: 1px solid rgba(255,255,255,0.11); border-radius: 24px; padding: 56px; background: linear-gradient(140deg, rgba(31,91,255,0.12), rgba(255,255,255,0.015));">
+      <div style="font-size: 30px; line-height: 1.4; letter-spacing: -0.02em; color: #EEF2FA; max-width: 40ch; margin-bottom: 40px; text-wrap: pretty;">“[TESTIMONIO DEL CLIENTE — 2 a 3 líneas, en su voz, hablando de impacto y no de entregables.]”</div>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 52px; height: 52px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 10px; color: #6B7488;">FOTO</div>
+        <div>
+          <div style="font-size: 15px; font-weight: 500;">[NOMBRE]</div>
+          <div style="font-size: 14px; color: #97A0B5;">[CARGO] · [EMPRESA]</div>
+        </div>
+      </div>
+    </div>
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Quote card única, ancho completo. Sin carrusel: un solo testimonio pega más.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Cita aprobada por escrito, nombre, cargo, empresa. Ideal: que mencione un número.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Retrato 400×400 (o iniciales si no hay foto), logo del cliente.</div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <sc-if value="{{ showRelated }}" hint-placeholder-val="{{ true }}">
+  <section data-screen-label="Casos relacionados" style="max-width: 1240px; margin: 0 auto; padding: 110px 40px 0;">
+    <div style="display: flex; align-items: end; justify-content: space-between; margin-bottom: 28px;">
+      <h2 style="font-size: 26px; letter-spacing: -0.02em; font-weight: 600; margin: 0;">Otros casos de éxito</h2>
+      <a href="#" style="font-size: 14px;">Ver todos →</a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; overflow: hidden;" style-hover="border-color: rgba(79,216,255,0.3);">
+        <div style="aspect-ratio: 16 / 10; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; color: #6B7488;">[THUMB CASO]</div>
+        <div style="padding: 22px;"><div style="font-size: 16px; line-height: 1.4; margin-bottom: 10px;">[TITULAR DEL CASO]</div><div style="font-size: 12px; color: #6B7488;">[SERVICIOS]</div></div>
+      </div>
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; overflow: hidden;" style-hover="border-color: rgba(79,216,255,0.3);">
+        <div style="aspect-ratio: 16 / 10; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; color: #6B7488;">[THUMB CASO]</div>
+        <div style="padding: 22px;"><div style="font-size: 16px; line-height: 1.4; margin-bottom: 10px;">[TITULAR DEL CASO]</div><div style="font-size: 12px; color: #6B7488;">[SERVICIOS]</div></div>
+      </div>
+      <div style="border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; overflow: hidden;" style-hover="border-color: rgba(79,216,255,0.3);">
+        <div style="aspect-ratio: 16 / 10; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; color: #6B7488;">[THUMB CASO]</div>
+        <div style="padding: 22px;"><div style="font-size: 16px; line-height: 1.4; margin-bottom: 10px;">[TITULAR DEL CASO]</div><div style="font-size: 12px; color: #6B7488;">[SERVICIOS]</div></div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <section id="cta" data-screen-label="H · CTA final" style="max-width: 1240px; margin: 110px auto 0; padding: 0 40px;">
+    <div style="border-radius: 28px; padding: 84px 64px; background: linear-gradient(130deg, #0F2AA8, #1F5BFF 45%, #4FD8FF); display: flex; align-items: end; justify-content: space-between; gap: 56px;">
+      <div>
+        <h2 style="font-size: 44px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 600; margin: 0 0 16px; max-width: 22ch; color: #fff;">¿Tienes un reto parecido en tu plataforma?</h2>
+        <p style="font-size: 17px; line-height: 1.6; color: rgba(255,255,255,0.82); margin: 0; max-width: 46ch;">Cuéntanos tu contexto y un estratega de Bluepixel te contacta con una lectura inicial de tu plataforma.</p>
+      </div>
+      <div style="display: flex; gap: 12px; flex-shrink: 0;">
+        <a href="#" style="font-size: 15px; font-weight: 500; color: #0A1024; background: #fff; padding: 15px 26px; border-radius: 999px;" style-hover="background: #E8ECF5;">Habla con nuestro equipo</a>
+        <a href="#" style="font-size: 15px; font-weight: 500; color: #fff; border: 1px solid rgba(255,255,255,0.45); padding: 15px 26px; border-radius: 999px;" style-hover="border-color: #fff;">Ver más casos</a>
+      </div>
+    </div>
+    <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-left: 2px solid #1F5BFF; padding: 4px 0 4px 20px;">
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">COMPONENTE</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Banner de marca a sangre con CTA primario + secundario. Único bloque de color saturado del documento.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">CONTENIDO A RECOPILAR</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Nada por caso: es copy fijo de la plantilla. Solo variar el gancho si el caso es de una industria específica.</div></div>
+        <div><div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4FD8FF; margin-bottom: 8px;">ASSETS</div><div style="font-size: 13px; color: #97A0B5; line-height: 1.65;">Ninguno.</div></div>
+      </div>
+    </sc-if>
+  </section>
+
+  <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+  <section style="max-width: 1240px; margin: 0 auto; padding: 120px 40px 40px;">
+    <div style="font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #4FD8FF; margin-bottom: 20px;">06 · Estructura final recomendada</div>
+    <h2 style="font-size: 36px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 600; margin: 0 0 32px; max-width: 26ch;">Qué cambiaría de la estructura propuesta</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+      <div style="display: grid; gap: 2px; border-top: 1px solid rgba(255,255,255,0.09);">
+        <div style="padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.09); display: grid; grid-template-columns: 130px 1fr; gap: 20px;"><div style="font-family: 'DM Mono', monospace; font-size: 11px; color: #4FD8FF;">FUSIONAR</div><div style="font-size: 15px; line-height: 1.6; color: #C6CEDC;">A + Snapshot en una sola pantalla. El snapshot como tira bajo el visual, no como sección aparte: el escaneo de 10 s ocurre sin scroll extra.</div></div>
+        <div style="padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.09); display: grid; grid-template-columns: 130px 1fr; gap: 20px;"><div style="font-family: 'DM Mono', monospace; font-size: 11px; color: #4FD8FF;">FUSIONAR</div><div style="font-size: 15px; line-height: 1.6; color: #C6CEDC;">E + F quedan contiguas y comparten el fondo del clímax: métrica y significado se leen juntos. F sin cards ni imagen para no competir con los números.</div></div>
+        <div style="padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.09); display: grid; grid-template-columns: 130px 1fr; gap: 20px;"><div style="font-family: 'DM Mono', monospace; font-size: 11px; color: #4FD8FF;">RECORTAR</div><div style="font-size: 15px; line-height: 1.6; color: #C6CEDC;">D no debe ser galería. Una sola comparativa del flujo más crítico + 3 ejes de cambio. Más pares de screenshots diluyen el argumento.</div></div>
+        <div style="padding: 20px 0; display: grid; grid-template-columns: 130px 1fr; gap: 20px;"><div style="font-family: 'DM Mono', monospace; font-size: 11px; color: #4FD8FF;">AÑADIR</div><div style="font-size: 15px; line-height: 1.6; color: #C6CEDC;">Nav pegajoso con progreso y “Otros casos” antes del CTA: convierte el caso en puerta de entrada al resto del portafolio.</div></div>
+      </div>
+      <div>
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 16px;">ORDEN FINAL · 8 BLOQUES, UNA SOLA HISTORIA</div>
+        <div style="font-size: 15px; line-height: 2.1; color: #C6CEDC;">01 · Hero + Snapshot<br />02 · Contexto y reto<br />03 · Solución (3 movimientos + visuales)<br />04 · Antes → Después<br />05 · Resultados cuantitativos + cualitativos<br />06 · Qué cambió en el negocio<br />07 · Testimonio<br />08 · Otros casos + CTA</div>
+        <div style="margin-top: 28px; border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 22px;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: #6B7488; margin-bottom: 12px;">REGLAS PARA NO SATURAR</div>
+          <div style="font-size: 14px; line-height: 1.8; color: #97A0B5;">— Nunca dos bloques de texto seguidos: alternar narrativa y visual.<br />— Máximo 120 palabras por sección; el detalle vive en el visual.<br />— Un solo cambio de fondo (resultados) y un solo bloque saturado (CTA).<br />— Un número dominante por pantalla.<br />— 6–8 assets visuales en total, no 20.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <footer style="max-width: 1240px; margin: 60px auto 0; padding: 28px 40px 48px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 11px; color: #4D566B; letter-spacing: 0.06em;">
+    <span>BLUEPIXEL · PLANTILLA DE CASE STUDY · WIREFRAME CONCEPTUAL</span>
+    <span>CONTENIDO EN PLACEHOLDERS</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Documento&quot;},&quot;showRelatedCases&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Documento&quot;},&quot;transformationStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;split&quot;,&quot;toggle&quot;],&quot;default&quot;:&quot;split&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Secciones&quot;},&quot;metricCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;min&quot;:3,&quot;max&quot;:5,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Secciones&quot;}}">
+class Component extends DCLogic {
+  state = { after: false };
+  barRef = React.createRef();
+
+  componentDidMount() {
+    this.onScroll = () => {
+      const el = this.barRef.current;
+      if (!el) return;
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      el.style.width = (max > 0 ? Math.min(100, (h.scrollTop / max) * 100) : 0) + "%";
+    };
+    window.addEventListener("scroll", this.onScroll, { passive: true });
+    this.onScroll();
+  }
+  componentWillUnmount() { window.removeEventListener("scroll", this.onScroll); }
+
+  btn(active) {
+    return {
+      font: "500 13px Archivo, sans-serif",
+      padding: "9px 20px",
+      borderRadius: "999px",
+      border: "none",
+      cursor: "pointer",
+      background: active ? "#1F5BFF" : "transparent",
+      color: active ? "#fff" : "#97A0B5"
+    };
+  }
+
+  renderVals() {
+    const style = this.props.transformationStyle ?? "split";
+    const metrics = this.props.metricCount ?? 4;
+    return {
+      showNotes: this.props.showNotes ?? true,
+      showRelated: this.props.showRelatedCases ?? true,
+      splitView: style === "split",
+      toggleView: style === "toggle",
+      metricCols: metrics,
+      showMetric4: metrics >= 4,
+      showMetric5: metrics >= 5,
+      stateLabel: this.state.after ? "[DESPUÉS]" : "[ANTES]",
+      beforeBtnStyle: this.btn(!this.state.after),
+      afterBtnStyle: this.btn(this.state.after),
+      showBefore: () => this.setState({ after: false }),
+      showAfter: () => this.setState({ after: true }),
+      barRef: this.barRef
+    };
+  }
+}
+</script>
+</body>
+</html>

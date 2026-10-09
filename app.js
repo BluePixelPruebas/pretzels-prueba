@@ -640,11 +640,17 @@ const app = {
             }
         }
         
+        const hiddenSteps = ['step-checkout', 'step-login', 'step-order-success', 'step-orders', 'step-order-details'];
+        const isHiddenStepActive = hiddenSteps.some(id => {
+            const el = document.getElementById(id);
+            return el && !el.classList.contains('hidden');
+        });
+
         // Sticky Bottom Button Logic
         const stickyBtn = document.getElementById('sticky-cart-btn');
         const stickyTotal = document.getElementById('sticky-cart-total');
         if (stickyBtn && stickyTotal) {
-            if (total > 0) {
+            if (total > 0 && !isHiddenStepActive) {
                 stickyTotal.textContent = total.toFixed(2);
                 stickyBtn.classList.remove('hidden');
                 stickyBtn.style.opacity = '1';
@@ -654,6 +660,7 @@ const app = {
                 stickyBtn.style.opacity = '0';
                 stickyBtn.style.pointerEvents = 'none';
                 stickyBtn.style.transform = 'translateX(-50%) translateY(20px)';
+                setTimeout(() => stickyBtn.classList.add('hidden'), 400);
             }
         }
     },
@@ -748,9 +755,10 @@ const app = {
         this.goToCheckout();
         
         if (btnElement) {
-            btnElement.textContent = 'Agregado ✓';
+            btnElement.innerHTML = 'Agregado';
             btnElement.style.background = '#3b82f6';
             btnElement.style.color = 'white';
+            btnElement.style.padding = '0.4rem 0.6rem';
             btnElement.disabled = true;
         }
         

@@ -673,26 +673,51 @@ const app = {
         this.showStep('checkout');
     },
 
-    applyCoupon: function() {
-        const code = document.getElementById('coupon-code').value;
-        if (!code) return;
-
-        this.log(`[Promo Engine] Validando cupón: ${code}...`, 'api');
+    applyCoupon: function(btnElement) {
+        if (this.state.coupon) {
+            this.triggerDynamicIsland("Cupón ya aplicado", 2000);
+            return;
+        }
+        
+        this.log('[Promo Engine] Validando elegibilidad de usuario para campaña de adquisición...', 'api');
+        
         setTimeout(() => {
-            if (code.toUpperCase() === 'WETZELS20') {
-                if (this.state.coupon) {
-                    this.triggerDynamicIsland("Ya aplicaste un cupón ⚠", 3000);
-                    return;
-                }
-                this.log('Cupón válido (20% OFF). Recalculando carrito.', 'api');
-                this.state.coupon = 'WETZELS20';
-                this.triggerDynamicIsland("Cupón aplicado: 20% OFF 🎉", 3000);
-                this.goToCheckout();
-            } else {
-                this.log('Error: Cupón inválido o expirado.', 'system');
-                this.triggerDynamicIsland("Cupón inválido ❌", 3000);
+            this.state.coupon = 'WETZELS20';
+            this.triggerDynamicIsland("20% Aplicado ✨", 2500);
+            this.goToCheckout();
+            
+            if(btnElement) {
+                btnElement.textContent = 'Aplicado ✅';
+                btnElement.style.opacity = '0.5';
+                btnElement.disabled = true;
             }
-        }, 600);
+            
+            this.track('apply_coupon', { code: 'WETZELS20' });
+            this.log('[Promo Engine] Descuento del 20% aplicado exitosamente. Recalculando ticket...', 'system');
+        }, 800);
+    },
+    
+    addUpsellDip: function(btnElement, price) {
+        this.log(`[AI Recommendation] Usuario aceptó upsell de Cheddar Dip (+$${price}). Actualizando ticket...`, 'api');
+        
+        this.state.cartTotal += price;
+        this.goToCheckout();
+        
+        if (btnElement) {
+            btnElement.textContent = 'Agregado ✓';
+            btnElement.style.background = '#3b82f6';
+            btnElement.style.color = 'white';
+            btnElement.disabled = true;
+        }
+        
+        this.triggerDynamicIsland("Dip Agregado 🧀", 2000);
+        
+        // Update dashboard metric for average ticket
+        const avgEl = document.getElementById('dashboard-ticket-avg');
+        if (avgEl) {
+            let current = parseInt(avgEl.textContent.replace('$','')) || 180;
+            avgEl.innerHTML = `$${current + 15} <span style="font-size:0.6rem; color:#10b981;">+Upsell</span>`;
+        }
     },
 
     redeemReward: function(element, itemName, points) {

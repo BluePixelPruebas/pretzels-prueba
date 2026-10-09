@@ -510,12 +510,18 @@
                             <!-- Populated by JS -->
                         </div>
                         
-                        <div class="mb-3" style="background: rgba(16, 185, 129, 0.1); border: 1px dashed #10b981; padding: 0.8rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <span style="font-weight: 800; color: #059669; font-size: 0.9rem;">20% OFF Primera Compra</span>
-                                <div style="font-size: 0.75rem; color: #10b981;">Usa código: WETZELS20</div>
+                        <h3 class="section-title mt-4">Recompensas</h3>
+                        <div class="mb-3" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.4); padding: 1rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <div style="background: #10b981; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                                    <span class="material-symbols-rounded">loyalty</span>
+                                </div>
+                                <div>
+                                    <span style="font-weight: 800; color: #059669; font-size: 1rem; display: block;">20% OFF Primera Compra</span>
+                                    <div style="font-size: 0.75rem; color: #10b981; margin-top: 0.2rem;">Beneficio exclusivo por lealtad</div>
+                                </div>
                             </div>
-                            <button class="btn-text" style="color: white; background: #10b981; padding: 0.4rem 0.8rem; border-radius: 8px; font-weight: 700; font-size: 0.8rem;" onclick="document.getElementById('coupon-code').value='WETZELS20'; app.applyCoupon();">Aplicar Promo</button>
+                            <button id="btn-apply-promo" class="btn-text" style="color: white; background: #10b981; padding: 0.5rem 1rem; border-radius: 99px; font-weight: 800; font-size: 0.85rem; transition: all 0.2s;" onclick="app.applyCoupon(this)">Canjear</button>
                         </div>
                         
                         <div class="coupon-box mt-3" style="border-radius: 12px; background: white; border: 1px solid #e2e8f0; padding: 0.5rem 0.8rem;">
@@ -523,10 +529,20 @@
                             <input type="text" id="order-notes" placeholder="Notas para el hornero o alergias..." style="background: transparent; border: none; flex: 1; font-size: 0.85rem; font-family: 'Fredoka', sans-serif;">
                         </div>
                         
-                        <div class="coupon-box mt-2">
-                            <span class="material-symbols-rounded text-muted">local_activity</span>
-                            <input type="text" id="coupon-code" placeholder="Promo (ej. WETZELS20)">
-                            <button class="btn-text" onclick="app.applyCoupon()">Aplicar</button>
+                        <div class="upsell-container mt-4" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem;">
+                            <h4 style="font-size: 0.75rem; color: #64748b; margin-top: 0; margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; display: flex; align-items: center; gap: 0.3rem;">
+                                <span class="material-symbols-rounded" style="font-size: 1rem; color: #3b82f6;">auto_awesome</span> Sugerencia de Copiloto IA
+                            </h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                    <div style="font-size: 2rem;">🧀</div>
+                                    <div>
+                                        <strong style="color: #1e293b; font-size: 0.95rem; display: block;">Extra Cheddar Dip</strong>
+                                        <span style="color: #64748b; font-size: 0.8rem;">Complemento perfecto</span>
+                                    </div>
+                                </div>
+                                <button id="btn-upsell-dip" style="background: white; color: #3b82f6; border: 2px solid #3b82f6; border-radius: 99px; padding: 0.4rem 0.8rem; font-weight: 800; font-size: 0.85rem;" onclick="app.addUpsellDip(this, 20)">+$20</button>
+                            </div>
                         </div>
                         
                         <h3 class="section-title mt-4">Pago Rápido</h3>
@@ -577,8 +593,9 @@
                                     <div class="status-step active" id="status-1">
                                         <div class="dot"></div> Preparando
                                     </div>
-                                    <div class="status-step" id="status-2">
-                                        <div class="dot"></div> Horneando
+                                    <div class="status-step" id="status-2" style="display: flex; flex-direction: column;">
+                                        <div><div class="dot"></div> Horneando <span style="font-size: 0.7rem; background: #3b82f6; color: white; padding: 0.1rem 0.4rem; border-radius: 4px; margin-left: 0.3rem;">IoT Link</span></div>
+                                        <div style="font-size: 0.75rem; color: #64748b; margin-left: 1.5rem; margin-top: 0.2rem; font-weight: 600;">Sincronizado: Horno Inteligente #04 (200°C)</div>
                                     </div>
                                     <div class="status-step" id="status-3">
                                         <div class="dot"></div> En camino / Listo
@@ -792,9 +809,19 @@
                     <span class="pulse-dot"></span> LIVE
                 </div>
             </div>
-            <div class="console-metrics">
-                <div class="metric"><span class="label">API LATENCY:</span> <span class="val">42ms</span></div>
-                <div class="metric"><span class="label">SERVER:</span> <span class="val">AWS us-east-1</span></div>
+            <div class="console-metrics" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: transparent; padding: 0 1rem 0.5rem 1rem;">
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16,185,129,0.3); padding: 0.5rem; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 0.6rem; color: #10b981; font-weight: 700;">CONVERSIÓN</div>
+                    <div style="font-size: 1rem; color: white; font-weight: 800; margin-top: 0.2rem;">14.5% <span style="font-size:0.7rem">📈</span></div>
+                </div>
+                <div style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59,130,246,0.3); padding: 0.5rem; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 0.6rem; color: #3b82f6; font-weight: 700;">TICKET PROM.</div>
+                    <div id="dashboard-ticket-avg" style="font-size: 1rem; color: white; font-weight: 800; margin-top: 0.2rem;">$180</div>
+                </div>
+                <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239,68,68,0.3); padding: 0.5rem; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 0.6rem; color: #ef4444; font-weight: 700;">ABANDONO</div>
+                    <div style="font-size: 1rem; color: white; font-weight: 800; margin-top: 0.2rem;">8% <span style="font-size:0.7rem">📉</span></div>
+                </div>
             </div>
             <div class="console-body" id="console-output">
                 <div class="log-entry system">[SYSTEM] Inicializando entorno de demostración Wetzel's Pretzels...</div>

@@ -315,7 +315,7 @@ const app = {
         }
         
         // 🌟 FEATURE 2: Micro-interacciones (Haptics y Animación)
-        if (navigator.vibrate) navigator.vibrate(50); // Haptic feedback
+        if (navigator.vibrate) navigator.vibrate([15, 30, 15]); // Doble tap Haptic feedback
         
         const cartBtn = document.getElementById('header-cart-btn');
         cartBtn.classList.remove('hidden');
@@ -612,6 +612,23 @@ const app = {
         }
         this.state.cartTotal = total;
         document.getElementById('cart-total-header').textContent = `$${total.toFixed(2)}`;
+        
+        // Sticky Bottom Button Logic
+        const stickyBtn = document.getElementById('sticky-cart-btn');
+        const stickyTotal = document.getElementById('sticky-cart-total');
+        if (stickyBtn && stickyTotal) {
+            if (total > 0) {
+                stickyTotal.textContent = total.toFixed(2);
+                stickyBtn.classList.remove('hidden');
+                stickyBtn.style.opacity = '1';
+                stickyBtn.style.pointerEvents = 'all';
+                stickyBtn.style.transform = 'translateX(-50%) translateY(0)';
+            } else {
+                stickyBtn.style.opacity = '0';
+                stickyBtn.style.pointerEvents = 'none';
+                stickyBtn.style.transform = 'translateX(-50%) translateY(20px)';
+            }
+        }
     },
 
     goToCheckout: function() {

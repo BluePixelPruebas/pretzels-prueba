@@ -108,6 +108,16 @@ const app = {
                 navItems[3].classList.add('active');
             }
         }
+
+        // Hide sticky cart in checkout and login
+        const stickyCart = document.getElementById('sticky-cart-btn');
+        if (stickyCart) {
+            if (stepId === 'checkout' || stepId === 'login' || stepId === 'order-success') {
+                stickyCart.style.display = 'none';
+            } else {
+                stickyCart.style.display = '';
+            }
+        }
         
         // Check if cart has items to show floating button
         const headerCartBtn = document.getElementById('header-cart-btn');
@@ -421,8 +431,8 @@ const app = {
                     </div>
                 </div>
                 <div class="upsell-actions" style="flex-direction: column; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem; margin-top: 0.5rem; display: flex;">
-                    <button class="btn-primary-small" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; background: rgba(255,255,255,0.1);" onclick="app.addMenuItem('Pepperoni Twist', 85.00, '🍕'); this.closest('.smart-upsell-toast').remove()"><span style="margin-right:0.5rem;">🍕</span> Cambiar por Pepperoni Twist</button>
-                    <button class="btn-primary-small" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; background: rgba(255,255,255,0.1);" onclick="app.triggerDynamicIsland('Notificación Activa 🔔', 2500); this.closest('.smart-upsell-toast').remove()"><span style="margin-right:0.5rem;">🕒</span> Avisarme cuando salgan (20m)</button>
+                    <button class="btn-primary-small" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; background: rgba(255,255,255,0.1); color: white;" onclick="app.addMenuItem('Pepperoni Twist', 85.00, '🍕'); this.closest('.smart-upsell-toast').remove()"><span style="margin-right:0.5rem;">🍕</span> Cambiar por Pepperoni Twist</button>
+                    <button class="btn-primary-small" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; background: rgba(255,255,255,0.1); color: white;" onclick="app.triggerDynamicIsland('Notificación Activa 🔔', 2500); this.closest('.smart-upsell-toast').remove()"><span style="margin-right:0.5rem;">🕒</span> Avisarme cuando salgan (20m)</button>
                     <button class="btn-text" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; color: #10b981;" onclick="app.showStep('stores'); this.closest('.smart-upsell-toast').remove()"><span class="material-symbols-rounded" style="font-size: 1.2rem; margin-right: 0.5rem; vertical-align: middle;">location_on</span> Buscar en otras sucursales</button>
                 </div>
             `;
@@ -618,6 +628,16 @@ const app = {
         }
         this.state.cartTotal = total;
         document.getElementById('cart-total-header').textContent = `$${total.toFixed(2)}`;
+        document.getElementById('sticky-cart-total').textContent = `${total.toFixed(2)}`;
+
+        const appContent = document.getElementById('app-content');
+        if (appContent) {
+            if (count > 0) {
+                appContent.classList.add('has-cart');
+            } else {
+                appContent.classList.remove('has-cart');
+            }
+        }
         
         // Sticky Bottom Button Logic
         const stickyBtn = document.getElementById('sticky-cart-btn');

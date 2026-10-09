@@ -641,10 +641,29 @@ const app = {
         }
         
         const hiddenSteps = ['step-checkout', 'step-login', 'step-order-success', 'step-orders', 'step-order-details'];
-        const isHiddenStepActive = hiddenSteps.some(id => {
-            const el = document.getElementById(id);
-            return el && !el.classList.contains('hidden');
+        let isHiddenStepActive = false;
+        let activeStepId = '';
+        
+        document.querySelectorAll('.step-container').forEach(el => {
+            if (!el.classList.contains('hidden')) {
+                activeStepId = el.id.replace('step-', '');
+                if (hiddenSteps.includes(el.id)) {
+                    isHiddenStepActive = true;
+                }
+            }
         });
+
+        // Header Cart Logic
+        const headerCartBtn = document.getElementById('header-cart-btn');
+        if (headerCartBtn && (activeStepId === 'home' || activeStepId === 'menu' || activeStepId === 'stores' || activeStepId === 'rewards')) {
+            if (count > 0) {
+                headerCartBtn.classList.remove('hidden');
+            } else {
+                headerCartBtn.classList.add('hidden');
+            }
+        } else if (headerCartBtn) {
+            headerCartBtn.classList.add('hidden');
+        }
 
         // Sticky Bottom Button Logic
         const stickyBtn = document.getElementById('sticky-cart-btn');

@@ -734,15 +734,14 @@ button.floating-btn {
 .header-cart {
     position: relative;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
+    background: transparent;
+    padding: 0;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: background 0.2s;
+    gap: 0;
+    transition: opacity 0.2s;
 }
-.header-cart:hover { background: rgba(255, 255, 255, 0.2); }
+.header-cart:hover { opacity: 0.8; }
 .cart-price {
     font-size: 0.85rem;
     font-weight: 700;

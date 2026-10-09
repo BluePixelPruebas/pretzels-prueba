@@ -796,12 +796,12 @@
                 </div>
                 
                 <!-- Sticky Cart Button -->
-                <div id="sticky-cart-btn" class="hidden" style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); width: 90%; max-width: 380px; z-index: 9000; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; pointer-events: none;">
-                    <button class="btn btn-primary" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 1.5rem; box-shadow: 0 10px 25px rgba(255, 123, 0, 0.4); border-radius: 99px; font-size: 1.1rem;" onclick="app.goToCheckout()">
-                        <span style="display: flex; align-items: center; gap: 0.5rem; font-weight: 800;">
-                            <span class="material-symbols-rounded" style="font-size: 1.3rem;">shopping_bag</span> Ver Orden
+                <div id="sticky-cart-btn" class="hidden" style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); width: auto; max-width: 320px; z-index: 9000; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; pointer-events: none;">
+                    <button class="btn btn-primary" style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; padding: 0.8rem 1.4rem; box-shadow: 0 8px 20px rgba(255, 123, 0, 0.35); border-radius: 99px; font-size: 0.95rem;" onclick="app.goToCheckout()">
+                        <span style="display: flex; align-items: center; gap: 0.4rem; font-weight: 700;">
+                            <span class="material-symbols-rounded" style="font-size: 1.1rem;">shopping_bag</span> Ver Orden
                         </span>
-                        <span style="font-weight: 900; font-size: 1.2rem; background: rgba(255,255,255,0.2); padding: 0.2rem 0.6rem; border-radius: 8px;">$<span id="sticky-cart-total">0.00</span></span>
+                        <span style="font-weight: 800; font-size: 1.05rem; background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 8px; line-height: 1;">$<span id="sticky-cart-total">0.00</span></span>
                     </button>
                 </div>
 

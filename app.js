@@ -426,7 +426,7 @@ const app = {
     },
 
     changeStoreAndAdd: function(newStore, name, price, emoji) {
-        this.log(\`[Order Router] Redirigiendo orden a sucursal contingencia: \${newStore}...\`, 'system');
+        this.log(`[Order Router] Redirigiendo orden a sucursal contingencia: ${newStore}...`, 'system');
         this.state.store = newStore;
         
         // Simular que en la nueva sucursal si hay stock suficiente

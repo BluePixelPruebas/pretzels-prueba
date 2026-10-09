@@ -109,10 +109,11 @@ const app = {
             }
         }
 
-        // Hide sticky cart in checkout and login
+        // Hide sticky cart in specific steps where it overlaps or is redundant
         const stickyCart = document.getElementById('sticky-cart-btn');
         if (stickyCart) {
-            if (stepId === 'checkout' || stepId === 'login' || stepId === 'order-success') {
+            const hiddenSteps = ['checkout', 'login', 'order-success', 'orders', 'order-details'];
+            if (hiddenSteps.includes(stepId)) {
                 stickyCart.style.display = 'none';
             } else {
                 stickyCart.style.display = '';

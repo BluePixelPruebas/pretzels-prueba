@@ -289,6 +289,7 @@ const app = {
                 if (badge) {
                     badge.textContent = 'Agotado';
                     badge.style.background = '#ef4444';
+                    badge.style.color = 'white';
                 }
                 if (dashStatus) dashStatus.innerHTML = '❌ AGOTADO';
                 

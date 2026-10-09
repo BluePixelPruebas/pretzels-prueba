@@ -75,6 +75,11 @@ const app = {
     },
 
     showStep: function(stepId) {
+        const appContent = document.getElementById('app-content');
+        if (appContent) {
+            appContent.scrollTop = 0;
+        }
+
         document.querySelectorAll('.step-container').forEach(el => {
             el.classList.add('hidden');
             el.classList.remove('active');

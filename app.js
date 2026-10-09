@@ -11,7 +11,8 @@ const app = {
             dips: [],
             drink: false
         },
-        coupon: null
+        coupon: null,
+        jalapenoStock: 2
     },
 
     log: function(message, type = 'system') {
@@ -269,6 +270,37 @@ const app = {
     },
 
     addMenuItem: function(name, price, emoji) {
+        // 📦 FEATURE 3: ERP Inventory Tracker
+        if (name.includes('Jalape') && name.includes('Cheese')) {
+            if (this.state.jalapenoStock <= 0) {
+                this.showOutOfStockOptions(name, price, emoji);
+                return;
+            }
+            this.state.jalapenoStock--;
+            this.log(`[ERP API] Descontando 1 ${name} del inventario SAP (Sucursal). Inventario crítico: ${this.state.jalapenoStock} restante.`, 'api');
+            
+            const badge = document.getElementById('jalapeno-badge');
+            const dashStatus = document.getElementById('jalapeno-stock-status');
+            
+            if (this.state.jalapenoStock === 1) {
+                if (badge) badge.textContent = 'Solo queda 1';
+                if (dashStatus) dashStatus.innerHTML = '⚠️ STOCK CRÍTICO (Queda 1)';
+            } else if (this.state.jalapenoStock === 0) {
+                if (badge) {
+                    badge.textContent = 'Agotado';
+                    badge.style.background = '#ef4444';
+                }
+                if (dashStatus) dashStatus.innerHTML = '❌ AGOTADO';
+                
+                const cards = document.querySelectorAll('.menu-card');
+                cards.forEach(card => {
+                    if (card.querySelector('h4') && card.querySelector('h4').textContent.includes('Jalape') && card.querySelector('h4').textContent.includes('Cheese')) {
+                        card.style.opacity = '0.5';
+                    }
+                });
+            }
+        }
+
         this.state.menuItems.push({ name, price, emoji });
         this.updateCartTotal();
         this.track('add_to_cart', { item: name, price: price });
@@ -280,11 +312,6 @@ const app = {
                 event: 'add_to_cart',
                 ecommerce: { currency: 'MXN', value: price, items: [{ item_name: name, price: price, quantity: 1 }] }
             });
-        }
-        
-        // 📦 FEATURE 3: ERP Inventory Tracker
-        if (name === 'Jalapeño Cheese') {
-            this.log(`[ERP API] Descontando 1 ${name} del inventario SAP (Sucursal). Inventario crítico: 1 restante.`, 'api');
         }
         
         // 🌟 FEATURE 2: Micro-interacciones (Haptics y Animación)
@@ -356,6 +383,60 @@ const app = {
         setTimeout(() => { if(upsellDiv.parentElement) upsellDiv.remove(); }, 6000);
     },
 
+    showOutOfStockOptions: function(name, price, emoji) {
+        this.log(`[AI Orchestrator] Calculando rutas de contingencia para producto agotado (${name})...`, 'api');
+        
+        const upsellDiv = document.createElement('div');
+        upsellDiv.className = 'smart-upsell-toast';
+        upsellDiv.style.background = 'linear-gradient(135deg, #1e293b, #0f172a)'; // Tema oscuro para contraste
+        upsellDiv.style.border = '1px solid rgba(255,255,255,0.1)';
+        
+        if (this.state.orderType === 'delivery') {
+            upsellDiv.innerHTML = `
+                <div class="upsell-content">
+                    <div class="upsell-icon" style="font-size: 2rem;">🛵</div>
+                    <div class="upsell-text">
+                        <h4 style="color: white;">Agotado en tu sucursal más cercana</h4>
+                        <p style="color: #cbd5e1;">Podemos enviarlo desde Mítikah, pero tomará 15 minutos extra. ¿Deseas continuar?</p>
+                    </div>
+                </div>
+                <div class="upsell-actions" style="flex-direction: column; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem; margin-top: 0.5rem;">
+                    <button class="btn-primary-small" style="width: 100%; justify-content: center; background: #10b981;" onclick="app.changeStoreAndAdd('Mítikah', '${name}', ${price}, '${emoji}'); this.closest('.smart-upsell-toast').remove()">Aceptar tiempo extra y continuar</button>
+                    <button class="btn-text" style="width: 100%; color: rgba(255,255,255,0.7);" onclick="this.closest('.smart-upsell-toast').remove()">Cancelar</button>
+                </div>
+            `;
+        } else {
+            upsellDiv.innerHTML = `
+                <div class="upsell-content" style="align-items: flex-start;">
+                    <div class="upsell-icon" style="font-size: 2rem;">🚫</div>
+                    <div class="upsell-text">
+                        <h4 style="color: white; line-height: 1.2;">Se nos acabó el ${name} por hoy</h4>
+                        <p style="color: #cbd5e1; font-size: 0.8rem;">Pero el horno nos avisa que estas opciones recién salieron. ¿Cómo lo resolvemos?</p>
+                    </div>
+                </div>
+                <div class="upsell-actions" style="flex-direction: column; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem; margin-top: 0.5rem; display: flex;">
+                    <button class="btn-primary-small" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; background: rgba(255,255,255,0.1);" onclick="app.addMenuItem('Pepperoni Twist', 85.00, '🍕'); this.closest('.smart-upsell-toast').remove()"><span style="margin-right:0.5rem;">🍕</span> Cambiar por Pepperoni Twist</button>
+                    <button class="btn-primary-small" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; background: rgba(255,255,255,0.1);" onclick="app.triggerDynamicIsland('Notificación Activa 🔔', 2500); this.closest('.smart-upsell-toast').remove()"><span style="margin-right:0.5rem;">🕒</span> Avisarme cuando salgan (20m)</button>
+                    <button class="btn-text" style="width: 100%; justify-content: flex-start; text-align: left; padding: 0.6rem; color: #10b981;" onclick="app.showStep('stores'); this.closest('.smart-upsell-toast').remove()"><span class="material-symbols-rounded" style="font-size: 1.2rem; margin-right: 0.5rem; vertical-align: middle;">location_on</span> Buscar en otras sucursales</button>
+                </div>
+            `;
+        }
+        
+        document.querySelector('.device-frame').appendChild(upsellDiv);
+    },
+
+    changeStoreAndAdd: function(newStore, name, price, emoji) {
+        this.log(\`[Order Router] Redirigiendo orden a sucursal contingencia: \${newStore}...\`, 'system');
+        this.state.store = newStore;
+        
+        // Simular que en la nueva sucursal si hay stock suficiente
+        this.state.jalapenoStock = 5; 
+        
+        // Agregar el item
+        this.addMenuItem(name, price, emoji);
+        this.triggerDynamicIsland("Sucursal cambiada ✅", 2500);
+    },
+
     // ---------- NEW FUTUREPROOF FEATURES ----------
     
     toggleGodMode: function() {
@@ -374,6 +455,22 @@ const app = {
             bottomNav.style.display = 'none';
             this.log('[System] Activando God Mode. Extrayendo telemetría directiva de Mixpanel en tiempo real...', 'system');
         }
+    },
+    
+    triggerERPOrder: function(btnElement) {
+        this.log(`[ERP Automation] Generando orden de abastecimiento automática a proveedor central por Jalapeño Cheese...`, 'api');
+        
+        btnElement.innerHTML = 'Enviando...';
+        btnElement.style.opacity = '0.7';
+        
+        setTimeout(() => {
+            btnElement.innerHTML = '✅ Orden #4092 Enviada al CEDIS';
+            btnElement.style.background = '#10b981';
+            btnElement.style.opacity = '1';
+            btnElement.disabled = true;
+            this.log(`[ERP Automation] Orden de compra confirmada. Entrega estimada en Sucursal: Mañana 06:00 AM.`, 'system');
+            this.triggerDynamicIsland("ERP: Orden Enviada ✅", 3000);
+        }, 1500);
     },
 
     sendAgentMessage: function() {
@@ -654,11 +751,18 @@ const app = {
     },
     
     finalizeOrder: function() {
+        const orderNotes = document.getElementById('order-notes') ? document.getElementById('order-notes').value : '';
+        
         this.track('purchase', { value: this.state.cartTotal, currency: 'MXN' });
         this.log('[Orquesta Pay] Tokenizando tarjeta y procesando cargo (API Webhook)...', 'auth');
         setTimeout(() => {
             this.log('Charge_succeeded: Cobro procesado exitosamente por Orquesta Pay.', 'api');
             this.log(`[Order Router] Inyectando Orden a KDS de la sucursal ${this.state.store}...`, 'system');
+            
+            if (orderNotes.trim() !== '') {
+                this.log(`[NLP AI] Analizando nota: "${orderNotes}". Aplicando protocolo especial en KDS de cocina.`, 'system');
+            }
+            
             this.log('[HubSpot CRM] Registrando evento de compra para perfilado de cliente...', 'api');
             
             // EVENTO GA4: Compra Exitosa (Purchase)
@@ -709,8 +813,19 @@ const app = {
         this.state = { 
             orderType: 'pickup', store: null, cartTotal: 0, menuItems: [], 
             customPretzel: { active: false, price: 65.00, toppings: [], dips: [], drink: false }, 
-            coupon: null 
+            coupon: null, jalapenoStock: 2 
         };
+        
+        const badge = document.getElementById('jalapeno-badge');
+        const dashStatus = document.getElementById('jalapeno-stock-status');
+        if (badge) { badge.textContent = 'Solo quedan 2'; badge.style.background = ''; }
+        if (dashStatus) dashStatus.innerHTML = '⚠️ STOCK CRÍTICO (Quedan 2)';
+        const cards = document.querySelectorAll('.menu-card');
+        cards.forEach(card => {
+            if (card.querySelector('h4') && card.querySelector('h4').textContent.includes('Jalape') && card.querySelector('h4').textContent.includes('Cheese')) {
+                card.style.opacity = '1';
+            }
+        });
         
         // Reset DOM elements
         document.querySelectorAll('.ingredient-card').forEach(el => el.classList.remove('selected'));

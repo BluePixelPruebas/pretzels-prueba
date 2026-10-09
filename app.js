@@ -779,7 +779,7 @@ const app = {
             });
             
             if(this.state.orderType === 'delivery'){
-                this.log('[Uber Direct API] Buscando repartidor disponible en la zona...', 'api');
+                this.log('[Wetzels Fleet API] Buscando repartidor de la Flota Propia en la zona...', 'api');
             }
             
             this.showStep('delivery');

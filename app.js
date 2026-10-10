@@ -892,6 +892,8 @@ const app = {
                     </div>`;
                 }
 
+                const pointsEarned = Math.floor(finalTotal); // 1 punto por cada peso
+                
                 summaryContainer.innerHTML = `
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
                         <h3 style="margin: 0; font-size: 1rem; color: var(--w-blue-dark); font-weight: 800;">Tu Pedido</h3>
@@ -900,9 +902,13 @@ const app = {
                     <div style="border-bottom: 1px dashed #cbd5e1; margin-bottom: 0.8rem; padding-bottom: 0.5rem;">
                         ${itemsHtml}
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
                         <strong style="color: var(--w-blue-dark);">Total</strong>
                         <strong style="color: var(--w-blue-dark); font-size: 1.1rem;">$${finalTotal.toFixed(2)}</strong>
+                    </div>
+                    <div style="background: rgba(255, 123, 0, 0.1); border-radius: 8px; padding: 0.6rem; display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+                        <span class="material-symbols-rounded" style="color: var(--w-yellow-dark); font-size: 1.1rem;">stars</span>
+                        <span style="font-weight: 800; font-size: 0.85rem; color: var(--w-yellow-dark);">¡Ganaste ${pointsEarned} pts con esta orden!</span>
                     </div>
                 `;
             }

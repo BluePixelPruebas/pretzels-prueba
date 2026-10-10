@@ -131,6 +131,9 @@ const app = {
         } else if (headerCartBtn) {
             headerCartBtn.classList.add('hidden');
         }
+        
+        // Ensure UI constraints (like container padding) are updated based on the new active screen
+        this.updateCartTotal();
     },
 
     toggleSideMenu: function() {
@@ -631,15 +634,6 @@ const app = {
         document.getElementById('cart-total-header').textContent = `$${total.toFixed(2)}`;
         document.getElementById('sticky-cart-total').textContent = `${total.toFixed(2)}`;
 
-        const appContent = document.getElementById('app-content');
-        if (appContent) {
-            if (total > 0) {
-                appContent.classList.add('has-cart');
-            } else {
-                appContent.classList.remove('has-cart');
-            }
-        }
-        
         const hiddenSteps = ['step-checkout', 'step-login', 'step-order-success', 'step-orders', 'step-order-details', 'step-delivery'];
         let isHiddenStepActive = false;
         let activeStepId = '';
@@ -652,6 +646,16 @@ const app = {
                 }
             }
         });
+
+        const appContent = document.getElementById('app-content');
+        if (appContent) {
+            if (total > 0 && !isHiddenStepActive) {
+                appContent.classList.add('has-cart');
+            } else {
+                appContent.classList.remove('has-cart');
+            }
+        }
+        
 
         // Header Cart Logic
         const headerCartBtn = document.getElementById('header-cart-btn');

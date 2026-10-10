@@ -974,6 +974,7 @@ const app = {
         document.getElementById('status-1').classList.add('active');
         
         this.updateVisualPretzel();
+        this.updateCartTotal(); // Refresca la UI del carrito flotante (ocultándolo)
         
         this.log('Sesión reseteada. Carrito vaciado.', 'system');
         this.showStep('home');

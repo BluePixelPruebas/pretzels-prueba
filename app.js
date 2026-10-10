@@ -874,6 +874,39 @@ const app = {
                 }
             });
             
+            // Llenar resumen de orden en la pantalla de delivery
+            const summaryContainer = document.getElementById('delivery-order-summary');
+            if (summaryContainer) {
+                let itemsHtml = this.state.menuItems.map(item => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">1x ${item.name}</span>
+                        <span style="font-size: 0.9rem; color: #64748b;">$${item.price.toFixed(2)}</span>
+                    </div>
+                `).join('');
+                
+                if (this.state.customPretzel.active) {
+                    itemsHtml += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">1x Pretzel Maker (${this.state.customPretzel.base})</span>
+                        <span style="font-size: 0.9rem; color: #64748b;">$${this.state.customPretzel.price.toFixed(2)}</span>
+                    </div>`;
+                }
+
+                summaryContainer.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
+                        <h3 style="margin: 0; font-size: 1rem; color: var(--w-blue-dark); font-weight: 800;">Tu Pedido</h3>
+                        <span style="font-weight: 800; color: #10b981; font-size: 0.85rem; background: #ecfdf5; padding: 0.2rem 0.5rem; border-radius: 4px;">Pagado</span>
+                    </div>
+                    <div style="border-bottom: 1px dashed #cbd5e1; margin-bottom: 0.8rem; padding-bottom: 0.5rem;">
+                        ${itemsHtml}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="color: var(--w-blue-dark);">Total</strong>
+                        <strong style="color: var(--w-blue-dark); font-size: 1.1rem;">$${finalTotal.toFixed(2)}</strong>
+                    </div>
+                `;
+            }
+
             if(this.state.orderType === 'delivery'){
                 this.log('[Wetzels Fleet API] Buscando repartidor de la Flota Propia en la zona...', 'api');
             }

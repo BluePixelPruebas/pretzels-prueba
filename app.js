@@ -112,7 +112,7 @@ const app = {
         // Hide sticky cart in specific steps where it overlaps or is redundant
         const stickyCart = document.getElementById('sticky-cart-btn');
         if (stickyCart) {
-            const hiddenSteps = ['checkout', 'login', 'order-success', 'orders', 'order-details'];
+            const hiddenSteps = ['checkout', 'login', 'order-success', 'orders', 'order-details', 'delivery'];
             if (hiddenSteps.includes(stepId)) {
                 stickyCart.style.display = 'none';
             } else {
@@ -640,7 +640,7 @@ const app = {
             }
         }
         
-        const hiddenSteps = ['step-checkout', 'step-login', 'step-order-success', 'step-orders', 'step-order-details'];
+        const hiddenSteps = ['step-checkout', 'step-login', 'step-order-success', 'step-orders', 'step-order-details', 'step-delivery'];
         let isHiddenStepActive = false;
         let activeStepId = '';
         

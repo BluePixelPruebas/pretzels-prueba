@@ -213,6 +213,13 @@ h2 { font-size: 1.7rem; letter-spacing: -0.5px; color: var(--w-blue-dark); margi
 }
 .btn-primary:active { transform: translateY(6px); box-shadow: 0 0 0 transparent; }
 
+.btn-blue {
+    background-color: var(--w-blue-dark);
+    color: var(--w-yellow);
+    box-shadow: 0 6px 0 #0f172a;
+}
+.btn-blue:active { transform: translateY(6px); box-shadow: 0 0 0 transparent; }
+
 .btn-secondary {
     background-color: var(--w-blue);
     color: white;

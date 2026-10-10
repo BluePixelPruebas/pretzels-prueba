@@ -633,7 +633,7 @@ const app = {
 
         const appContent = document.getElementById('app-content');
         if (appContent) {
-            if (count > 0) {
+            if (total > 0) {
                 appContent.classList.add('has-cart');
             } else {
                 appContent.classList.remove('has-cart');
@@ -656,7 +656,7 @@ const app = {
         // Header Cart Logic
         const headerCartBtn = document.getElementById('header-cart-btn');
         if (headerCartBtn && (activeStepId === 'home' || activeStepId === 'menu' || activeStepId === 'stores' || activeStepId === 'rewards')) {
-            if (count > 0) {
+            if (total > 0) {
                 headerCartBtn.classList.remove('hidden');
             } else {
                 headerCartBtn.classList.add('hidden');

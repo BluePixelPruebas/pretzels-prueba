@@ -814,53 +814,155 @@
             </div>
         </main>
 
-        <!-- Technical Console Panel -->
+        <!-- Technical & Admin Console Panel (Right Side Split) -->
         <aside class="console-panel">
             <div class="console-header">
-                <div class="console-title">
-                    <span class="material-symbols-rounded icon-small">terminal</span> 
-                    <h3>Log de Sistemas (Cloud & API)</h3>
+                <div class="console-tabs">
+                    <button class="console-tab-btn active" id="tab-btn-ops" onclick="app.switchConsoleTab('ops')">
+                        <span class="material-symbols-rounded" style="font-size: 1rem;">storefront</span>
+                        <span>Consola Sucursal</span>
+                    </button>
+                    <button class="console-tab-btn" id="tab-btn-logs" onclick="app.switchConsoleTab('logs')">
+                        <span class="material-symbols-rounded" style="font-size: 1rem;">terminal</span>
+                        <span>Cloud & APIs</span>
+                    </button>
                 </div>
                 <div class="pulse-indicator">
-                    <span class="pulse-dot"></span> LIVE
+                    <span class="pulse-dot"></span> LIVE SYNC
                 </div>
             </div>
-            <div class="console-metrics" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: transparent; padding: 0 1rem 0.5rem 1rem;">
-                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16,185,129,0.3); padding: 0.5rem; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 0.6rem; color: #10b981; font-weight: 700;">CONVERSIÓN</div>
-                    <div style="font-size: 1rem; color: white; font-weight: 800; margin-top: 0.2rem;">14.5% <span style="font-size:0.7rem">📈</span></div>
+
+            <!-- TAB 1: CONSOLA DE OPERACIÓN & WYNN ADMIN (PRD C1, C2, C3, C4, C5) -->
+            <div id="admin-view" class="admin-view">
+                <!-- Subbar: Sucursal & Roles -->
+                <div class="admin-subbar">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="material-symbols-rounded" style="font-size: 1.1rem; color: #ffd200;">store</span>
+                        <select id="admin-branch-select" class="admin-branch-select" onchange="app.changeAdminBranch(this.value)">
+                            <option value="Mexicali">Mexicali · Plaza Galerías (Apertura #1)</option>
+                            <option value="Santa Fe" selected>CDMX · Santa Fe</option>
+                            <option value="Mitikah">CDMX · Mítikah</option>
+                            <option value="Puerto Vallarta">Puerto Vallarta · Marina</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="admin-role-badge">Wynn Admin</span>
+                        <span id="admin-store-status-badge" style="font-size: 0.65rem; font-weight: 800; background: #064e3b; color: #34d399; padding: 3px 8px; border-radius: 4px; border: 1px solid #059669;">Abierta</span>
+                    </div>
                 </div>
-                <div style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59,130,246,0.3); padding: 0.5rem; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 0.6rem; color: #3b82f6; font-weight: 700;">TICKET PROM.</div>
-                    <div id="dashboard-ticket-avg" style="font-size: 1rem; color: white; font-weight: 800; margin-top: 0.2rem;">$180</div>
+
+                <!-- KPIs Operativos del Turno (Módulo C1) -->
+                <div class="admin-kpis-grid">
+                    <div class="kpi-mini-card">
+                        <div class="kpi-label">Ventas Hoy</div>
+                        <div class="kpi-val" id="admin-kpi-sales">$14,850</div>
+                    </div>
+                    <div class="kpi-mini-card">
+                        <div class="kpi-label">Órdenes</div>
+                        <div class="kpi-val" id="admin-kpi-orders">84</div>
+                    </div>
+                    <div class="kpi-mini-card">
+                        <div class="kpi-label">Ticket Prom.</div>
+                        <div class="kpi-val" id="admin-kpi-ticket">$176.80</div>
+                    </div>
+                    <div class="kpi-mini-card">
+                        <div class="kpi-label">SLA Prep.</div>
+                        <div class="kpi-val" style="color: #34d399;">11.4 min</div>
+                    </div>
                 </div>
-                <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239,68,68,0.3); padding: 0.5rem; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 0.6rem; color: #ef4444; font-weight: 700;">ABANDONO</div>
-                    <div style="font-size: 1rem; color: white; font-weight: 800; margin-top: 0.2rem;">8% <span style="font-size:0.7rem">📉</span></div>
+
+                <div class="admin-content-split">
+                    <!-- SECCIÓN: Feed de Órdenes Entrantes / KDS (Módulo C2) -->
+                    <div>
+                        <div class="admin-section-head">
+                            <h4>
+                                <span class="material-symbols-rounded" style="font-size: 1rem; color: #3b82f6;">receipt_long</span>
+                                Comandas en Vivo (KDS)
+                            </h4>
+                            <span class="admin-badge-count" id="admin-active-orders-count">2 activas</span>
+                        </div>
+                        <div class="kds-orders-container" id="admin-orders-list">
+                            <!-- Populated dynamically by app.js -->
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: Control Operativo & CMS Rápido (Módulos C3, C4, C5) -->
+                    <div>
+                        <div class="admin-section-head">
+                            <h4>
+                                <span class="material-symbols-rounded" style="font-size: 1rem; color: #ffd200;">tune</span>
+                                Control Operativo & CMS Rápido
+                            </h4>
+                            <span style="font-size: 0.65rem; color: #64748b;">Sincronización Inmediata</span>
+                        </div>
+                        <div class="admin-toggles-card">
+                            <!-- Toggle 1: Stock Jalapeño Cheese (C3) -->
+                            <div class="admin-toggle-row">
+                                <div class="toggle-info">
+                                    <h5>🌶️ Jalapeño Cheese en Sucursal</h5>
+                                    <p id="admin-stock-jalapeno-label">En Stock (2 disponibles) · Afecta menú app</p>
+                                </div>
+                                <label class="switch-control">
+                                    <input type="checkbox" id="admin-toggle-jalapeno" checked onchange="app.toggleAdminStock(this.checked)">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <!-- Toggle 2: Promoción WETZELS20 (C5) -->
+                            <div class="admin-toggle-row">
+                                <div class="toggle-info">
+                                    <h5>🎟️ Cupón 20% OFF (WETZELS20)</h5>
+                                    <p id="admin-promo-coupon-label">Campaña Activa · Redimible en checkout</p>
+                                </div>
+                                <label class="switch-control">
+                                    <input type="checkbox" id="admin-toggle-promo" checked onchange="app.toggleAdminPromo(this.checked)">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <!-- Toggle 3: Estado de Sucursal (C4) -->
+                            <div class="admin-toggle-row">
+                                <div class="toggle-info">
+                                    <h5>🚪 Recepción de Pedidos Digitales</h5>
+                                    <p id="admin-branch-status-label">Sucursal Abierta · Aceptando Delivery y Pickup</p>
+                                </div>
+                                <label class="switch-control">
+                                    <input type="checkbox" id="admin-toggle-branch" checked onchange="app.toggleAdminStoreStatus(this.checked)">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="console-body" id="console-output">
-                <div class="log-entry system">[SYSTEM] Inicializando entorno de demostración Wetzel's Pretzels...</div>
-                <div class="log-entry system">[SYSTEM] Conexión establecida con GraphQL Gateway.</div>
-                <div class="log-entry system">[SYSTEM] Esperando interacciones de usuario...</div>
+
+            <!-- TAB 2: LOGS DE SISTEMAS & TELEMETRÍA (ORIGINAL CONSOLE) -->
+            <div id="logs-view" class="console-body hidden">
+                <div class="console-metrics" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: transparent; padding: 0 0 1rem 0; margin-bottom: 0.5rem; border-bottom: 1px dashed #1e293b;">
+                    <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16,185,129,0.3); padding: 0.4rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.6rem; color: #10b981; font-weight: 700;">CONVERSIÓN</div>
+                        <div style="font-size: 0.95rem; color: white; font-weight: 800; margin-top: 0.1rem;">14.5% 📈</div>
+                    </div>
+                    <div style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59,130,246,0.3); padding: 0.4rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.6rem; color: #3b82f6; font-weight: 700;">TICKET PROM.</div>
+                        <div id="dashboard-ticket-avg" style="font-size: 0.95rem; color: white; font-weight: 800; margin-top: 0.1rem;">$180</div>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239,68,68,0.3); padding: 0.4rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.6rem; color: #ef4444; font-weight: 700;">ABANDONO</div>
+                        <div style="font-size: 0.95rem; color: white; font-weight: 800; margin-top: 0.1rem;">8% 📉</div>
+                    </div>
+                </div>
+                <div id="console-output">
+                    <div class="log-entry system">[SYSTEM] Inicializando entorno Cloud Wetzel's Pretzels...</div>
+                    <div class="log-entry system">[SYSTEM] Conexión establecida con GraphQL Gateway & Strapi CMS.</div>
+                    <div class="log-entry system">[SYSTEM] Webhooks Uber Direct y Orquesta Pay en modo LISTEN.</div>
+                    <div class="log-entry system">[SYSTEM] Esperando transacciones de usuario...</div>
+                </div>
             </div>
         </aside>
     </div>
 
     <script src="app.js"></script>
-    <!-- QR Reward Modal -->
-    <div id="qr-modal" style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;">
-        <div style="background: white; border-radius: 24px; padding: 2rem; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-            <h3 style="color: var(--w-blue-dark); font-weight: 800; font-size: 1.4rem; margin-top: 0; margin-bottom: 0.5rem;" id="qr-modal-title">¡Recompensa Lista!</h3>
-            <p style="color: var(--w-text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; font-weight: 600;">Muestra este código al cajero en la sucursal para recibir tu <span id="qr-modal-item" style="color: var(--w-yellow-dark); font-weight: 800;">Limonada Ch</span> gratis.</p>
-            
-            <div style="background: white; border: 4px solid var(--w-yellow); border-radius: 16px; padding: 1rem; display: inline-block; margin-bottom: 1.5rem;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=WETZELS-REWARD-12345" alt="QR Code" style="width: 150px; height: 150px; display: block;">
-            </div>
-            
-            <button class="btn btn-primary" style="width: 100%; font-size: 1rem;" onclick="app.closeQrModal()">Entendido</button>
-        </div>
-    </div>
     <!-- QR Reward Modal -->
     <div id="qr-modal" style="position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;">
         <div style="background: white; border-radius: 24px; padding: 2rem; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">

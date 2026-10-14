@@ -12,7 +12,38 @@ const app = {
             drink: false
         },
         coupon: null,
-        jalapenoStock: 2
+        jalapenoStock: 2,
+        admin: {
+            activeTab: 'ops',
+            branch: 'Santa Fe',
+            branchStatus: 'open',
+            promoActive: true,
+            salesToday: 14850,
+            ordersCount: 84,
+            activeUserOrderId: null,
+            orders: [
+                {
+                    id: 'WP-8490',
+                    time: '11:15 AM',
+                    customer: 'Mariana R.',
+                    type: 'Pickup 🏃‍♂️',
+                    items: ['Sinful Cinnamon (x2)', 'Fresh Lemonade'],
+                    total: 200.00,
+                    status: 'ready',
+                    notes: ''
+                },
+                {
+                    id: 'WP-8491',
+                    time: '11:22 AM',
+                    customer: 'Carlos D.',
+                    type: 'Uber Direct 🛵',
+                    items: ['Cheese Dog', 'Wetzel Bitz', 'Cheddar Dip'],
+                    total: 180.00,
+                    status: 'baking',
+                    notes: 'Extra servilletas'
+                }
+            ]
+        }
     },
 
     log: function(message, type = 'system') {
@@ -748,6 +779,12 @@ const app = {
     },
 
     applyCoupon: function(btnElement) {
+        if (this.state.admin && !this.state.admin.promoActive) {
+            this.triggerDynamicIsland("Cupón inactivo en consola", 2500);
+            alert("Esta promoción (WETZELS20) está temporalmente pausada desde la Consola Administrativa.");
+            return;
+        }
+
         if (this.state.coupon) {
             this.triggerDynamicIsland("Cupón ya aplicado", 2000);
             return;
@@ -852,12 +889,15 @@ const app = {
     
     finalizeOrder: function() {
         const orderNotes = document.getElementById('order-notes') ? document.getElementById('order-notes').value : '';
+        const finalTotal = parseFloat(document.getElementById('checkout-total').textContent) || this.state.cartTotal;
+        const transactionId = 'WP-' + (Math.floor(1000 + Math.random() * 9000));
         
         this.track('purchase', { value: this.state.cartTotal, currency: 'MXN' });
         this.log('[Orquesta Pay] Tokenizando tarjeta y procesando cargo (API Webhook)...', 'auth');
+        
         setTimeout(() => {
             this.log('Charge_succeeded: Cobro procesado exitosamente por Orquesta Pay.', 'api');
-            this.log(`[Order Router] Inyectando Orden a KDS de la sucursal ${this.state.store}...`, 'system');
+            this.log(`[Order Router] Inyectando Orden a KDS de la sucursal ${this.state.store || 'Wetzel\'s Santa Fe'}...`, 'system');
             
             if (orderNotes.trim() !== '') {
                 this.log(`[NLP AI] Analizando nota: "${orderNotes}". Aplicando protocolo especial en KDS de cocina.`, 'system');
@@ -866,41 +906,65 @@ const app = {
             this.log('[HubSpot CRM] Registrando evento de compra para perfilado de cliente...', 'api');
             
             // EVENTO GA4: Compra Exitosa (Purchase)
-            const finalTotal = parseFloat(document.getElementById('checkout-total').textContent);
-            window.dataLayer.push({
-                event: 'purchase',
-                ecommerce: {
-                    transaction_id: 'WP-' + Math.floor(Math.random() * 10000),
-                    value: finalTotal,
-                    currency: 'MXN',
-                    order_type: this.state.orderType,
-                    store: this.state.store
-                }
-            });
+            if (window.dataLayer) {
+                window.dataLayer.push({
+                    event: 'purchase',
+                    ecommerce: {
+                        transaction_id: transactionId,
+                        value: finalTotal,
+                        currency: 'MXN',
+                        order_type: this.state.orderType,
+                        store: this.state.store || 'Wetzel\'s Santa Fe'
+                    }
+                });
+            }
             
-            // Llenar resumen de orden en la pantalla de delivery
+            // 📦 Formar resumen de ítems para el KDS de la Consola Administrativa
+            const itemsList = [];
+            this.state.menuItems.forEach(item => {
+                itemsList.push({ name: item.name, price: item.price, emoji: item.emoji });
+            });
+            if (this.state.customPretzel.active) {
+                const cp = this.state.customPretzel;
+                const tops = cp.toppings.map(t => t.name).join(', ') || 'Clásico';
+                const dips = cp.dips.map(d => d.name).join(', ');
+                let desc = `Pretzel Maker (${tops}`;
+                if (dips) desc += ` + Dip ${dips}`;
+                if (cp.drink) desc += ` + Limonada`;
+                desc += ')';
+                itemsList.push({ name: desc, price: cp.price, emoji: '✨🥨' });
+            }
+
+            // 🚀 INYECTAR ORDEN EN VIVO AL TABLERO ADMINISTRATIVO (PRD C2)
+            const newAdminOrder = {
+                id: transactionId,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                customer: 'Alan G.',
+                type: this.state.orderType === 'delivery' ? 'Uber Direct 🛵' : 'Pickup en Tienda 🏃‍♂️',
+                store: this.state.store || 'Wetzel\'s Santa Fe',
+                items: itemsList,
+                total: finalTotal,
+                status: 'pending', // 'pending' | 'baking' | 'ready' | 'delivered'
+                notes: orderNotes,
+                isUserActiveOrder: true
+            };
+            this.addOrderToAdmin(newAdminOrder);
+
+            // Llenar resumen de orden en la pantalla de delivery del cliente
             const summaryContainer = document.getElementById('delivery-order-summary');
             if (summaryContainer) {
-                let itemsHtml = this.state.menuItems.map(item => `
+                let itemsHtml = itemsList.map(item => `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">1x ${item.name}</span>
-                        <span style="font-size: 0.9rem; color: #64748b;">$${item.price.toFixed(2)}</span>
+                        <span style="font-size: 0.88rem; color: #1e293b; font-weight: 600;">1x ${item.name}</span>
+                        <span style="font-size: 0.88rem; color: #64748b; font-weight: 700;">$${item.price.toFixed(2)}</span>
                     </div>
                 `).join('');
-                
-                if (this.state.customPretzel.active) {
-                    itemsHtml += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">1x Pretzel Maker (${this.state.customPretzel.base})</span>
-                        <span style="font-size: 0.9rem; color: #64748b;">$${this.state.customPretzel.price.toFixed(2)}</span>
-                    </div>`;
-                }
 
-                const pointsEarned = Math.floor(finalTotal); // 1 punto por cada peso
+                const pointsEarned = Math.floor(finalTotal);
                 
                 summaryContainer.innerHTML = `
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
-                        <h3 style="margin: 0; font-size: 1rem; color: var(--w-blue-dark); font-weight: 800;">Tu Pedido</h3>
+                        <h3 style="margin: 0; font-size: 1rem; color: var(--w-blue-dark); font-weight: 800;">Tu Pedido (${transactionId})</h3>
                         <span style="font-weight: 800; color: #10b981; font-size: 0.85rem; background: #ecfdf5; padding: 0.2rem 0.5rem; border-radius: 4px;">Pagado</span>
                     </div>
                     <div style="border-bottom: 1px dashed #cbd5e1; margin-bottom: 0.8rem; padding-bottom: 0.5rem;">
@@ -917,76 +981,348 @@ const app = {
                 `;
             }
 
-            if(this.state.orderType === 'delivery'){
-                this.log('[Wetzels Fleet API] Buscando repartidor de la Flota Propia en la zona...', 'api');
+            if (this.state.orderType === 'delivery') {
+                this.log('[Uber Direct API] Solicitud de repartidor pre-asignada en radio de 1.5 km...', 'api');
             }
             
             this.showStep('delivery');
-            this.simulateTracker();
-            
-            // Trigger Dynamic Island Notification!
             this.triggerDynamicIsland("Pedido Confirmado 🥨", 4000);
+            
+            // Auto-fallback en caso de que el presentador no use los botones del admin
+            this.simulateTracker(transactionId);
             
         }, 1500);
     },
 
-    simulateTracker: function() {
+    simulateTracker: function(orderId) {
+        // Fallback automático para demostración fluida
         setTimeout(() => {
-            this.log('[Webhook KDS] Actualización: Horneando.', 'api');
-            document.getElementById('status-1').classList.remove('active');
-            document.getElementById('status-2').classList.add('active');
+            const currentOrder = this.state.admin.orders.find(o => o.id === orderId);
+            if (currentOrder && currentOrder.status === 'pending') {
+                this.advanceOrderStatus(orderId, 'baking', true);
+            }
             
             setTimeout(() => {
-                const msg = this.state.orderType === 'delivery' 
-                    ? '[Uber Direct Webhook] Repartidor asignado y en camino al domicilio.' 
-                    : '[Webhook KDS] Orden lista para Pickup en mostrador.';
-                
+                const checkOrder = this.state.admin.orders.find(o => o.id === orderId);
+                if (checkOrder && checkOrder.status === 'baking') {
+                    this.advanceOrderStatus(orderId, 'ready', true);
+                }
+            }, 4000);
+        }, 3500);
+    },
+
+    // ---------- CONSOLA ADMINISTRATIVA & OPERACIÓN (PRD C1, C2, C3, C4, C5) ----------
+
+    switchConsoleTab: function(tab) {
+        const btnOps = document.getElementById('tab-btn-ops');
+        const btnLogs = document.getElementById('tab-btn-logs');
+        const viewAdmin = document.getElementById('admin-view');
+        const viewLogs = document.getElementById('logs-view');
+
+        if (tab === 'ops') {
+            btnOps.classList.add('active');
+            btnLogs.classList.remove('active');
+            viewAdmin.classList.remove('hidden');
+            viewLogs.classList.add('hidden');
+            this.state.admin.activeTab = 'ops';
+            this.log('[Consola] Cambiando vista a Tablero de Operaciones y KDS.', 'ui');
+        } else {
+            btnOps.classList.remove('active');
+            btnLogs.classList.add('active');
+            viewAdmin.classList.add('hidden');
+            viewLogs.classList.remove('hidden');
+            this.state.admin.activeTab = 'logs';
+            this.log('[Consola] Cambiando vista a Telemetría Cloud & Logs de Microservicios.', 'ui');
+        }
+    },
+
+    changeAdminBranch: function(branchName) {
+        this.state.admin.branch = branchName;
+        this.log(`[Strapi CMS / KDS] Conmutando terminal operativa a sucursal: ${branchName}`, 'system');
+        this.triggerDynamicIsland(`Sucursal: ${branchName} 🏬`, 2500);
+    },
+
+    renderAdminOrders: function() {
+        const container = document.getElementById('admin-orders-list');
+        const countBadge = document.getElementById('admin-active-orders-count');
+        if (!container) return;
+
+        const activeOrders = this.state.admin.orders.filter(o => o.status !== 'delivered');
+        if (countBadge) countBadge.textContent = `${activeOrders.length} activas`;
+
+        if (this.state.admin.orders.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: #64748b; padding: 2rem; font-size: 0.85rem;">No hay órdenes registradas aún</div>`;
+            return;
+        }
+
+        container.innerHTML = this.state.admin.orders.map(order => {
+            let statusTagClass = 'tag-pending';
+            let statusLabel = 'Por Aceptar';
+            let actionBtnHtml = '';
+
+            if (order.status === 'pending') {
+                statusTagClass = 'tag-pending';
+                statusLabel = 'Por Aceptar';
+                actionBtnHtml = `
+                    <button class="kds-btn kds-btn-accept" onclick="app.advanceOrderStatus('${order.id}', 'baking')">
+                        <span class="material-symbols-rounded" style="font-size: 1rem;">local_fire_department</span>
+                        Aceptar y Hornear
+                    </button>
+                `;
+            } else if (order.status === 'baking') {
+                statusTagClass = 'tag-baking';
+                statusLabel = 'En Horno IoT';
+                actionBtnHtml = `
+                    <button class="kds-btn kds-btn-dispatch" onclick="app.advanceOrderStatus('${order.id}', 'ready')">
+                        <span class="material-symbols-rounded" style="font-size: 1rem;">moped</span>
+                        ${order.type.includes('Uber') ? 'Llamar a Uber Direct' : 'Listo en Mostrador'}
+                    </button>
+                `;
+            } else if (order.status === 'ready') {
+                statusTagClass = 'tag-ready';
+                statusLabel = order.type.includes('Uber') ? 'En Camino (Uber)' : 'Listo p/ Entrega';
+                actionBtnHtml = `
+                    <button class="kds-btn kds-btn-secondary" onclick="app.advanceOrderStatus('${order.id}', 'delivered')">
+                        <span class="material-symbols-rounded" style="font-size: 1rem;">check_circle</span>
+                        Marcar Entregado
+                    </button>
+                `;
+            } else {
+                statusTagClass = 'tag-ready';
+                statusLabel = 'Entregado ✅';
+                actionBtnHtml = `<span style="font-size: 0.72rem; color: #10b981; font-weight: 700;">Orden Finalizada</span>`;
+            }
+
+            const itemsRows = order.items.map(it => {
+                const name = typeof it === 'string' ? it : `${it.emoji || '🥨'} ${it.name}`;
+                const price = typeof it === 'string' ? '' : `<span>$${it.price.toFixed(2)}</span>`;
+                return `<div class="kds-item-row"><span>${name}</span> ${price}</div>`;
+            }).join('');
+
+            const isNewPulse = (order.id === this.state.admin.activeUserOrderId && order.status === 'pending') ? 'new-pulse' : '';
+
+            return `
+                <div class="kds-order-card ${isNewPulse}" id="kds-card-${order.id}">
+                    <div class="kds-card-header">
+                        <div class="kds-order-id">
+                            <span>${order.id}</span>
+                            <span style="color: #94a3b8; font-weight: 500; font-size: 0.8rem;">· ${order.customer}</span>
+                        </div>
+                        <span class="kds-status-tag ${statusTagClass}">${statusLabel}</span>
+                    </div>
+                    <div class="kds-meta">
+                        <span>🕒 ${order.time} · ${order.type}</span>
+                        <strong style="color: #ffd200;">$${order.total.toFixed(2)}</strong>
+                    </div>
+                    <div class="kds-items-list">
+                        ${itemsRows}
+                    </div>
+                    ${order.notes ? `<div class="kds-notes">📝 Nota Cliente: "${order.notes}"</div>` : ''}
+                    <div class="kds-actions-row">
+                        ${actionBtnHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    advanceOrderStatus: function(orderId, nextStatus, isAutoFallback = false) {
+        const order = this.state.admin.orders.find(o => o.id === orderId);
+        if (!order) return;
+
+        order.status = nextStatus;
+
+        // Si es la orden activa del usuario en el teléfono, actualizamos la pantalla del teléfono en vivo
+        if (order.id === this.state.admin.activeUserOrderId || order.isUserActiveOrder) {
+            if (nextStatus === 'baking') {
+                const st1 = document.getElementById('status-1');
+                const st2 = document.getElementById('status-2');
+                if (st1) st1.classList.remove('active');
+                if (st2) st2.classList.add('active');
+                this.log(`[KDS Sucursal] Comanda ${orderId} aceptada. Horno #04 programado a 200°C.`, 'system');
+                this.triggerDynamicIsland("Horneando Pretzel 🔥", 3000);
+            } else if (nextStatus === 'ready') {
+                const st2 = document.getElementById('status-2');
+                const st3 = document.getElementById('status-3');
+                if (st2) st2.classList.remove('active');
+                if (st3) st3.classList.add('active');
+                const msg = order.type.includes('Uber') 
+                    ? `[Uber Direct API] Repartidor asignado al pedido ${orderId}. Ruta trazada.`
+                    : `[Mostrador] Pedido ${orderId} empacado y listo para Pickup.`;
                 this.log(msg, 'api');
-                document.getElementById('status-2').classList.remove('active');
-                document.getElementById('status-3').classList.add('active');
-            }, 3000);
-        }, 3000);
+                this.triggerDynamicIsland("¡Orden en Camino! 🛵", 3500);
+            } else if (nextStatus === 'delivered') {
+                this.log(`[Consola Wynn] Pedido ${orderId} cerrado y archivado con SLA cumplido.`, 'system');
+            }
+        } else {
+            this.log(`[KDS Sucursal] Orden ${orderId} actualizada a: ${nextStatus.toUpperCase()}`, 'system');
+        }
+
+        this.renderAdminOrders();
+    },
+
+    addOrderToAdmin: function(order) {
+        this.state.admin.orders.unshift(order);
+        this.state.admin.activeUserOrderId = order.id;
+        this.state.admin.salesToday += order.total;
+        this.state.admin.ordersCount += 1;
+
+        // Actualizar KPIs en el DOM
+        const salesEl = document.getElementById('admin-kpi-sales');
+        const ordersEl = document.getElementById('admin-kpi-orders');
+        const ticketEl = document.getElementById('admin-kpi-ticket');
+
+        if (salesEl) salesEl.textContent = `$${this.state.admin.salesToday.toLocaleString('es-MX', { minimumFractionDigits: 0 })}`;
+        if (ordersEl) ordersEl.textContent = this.state.admin.ordersCount;
+        if (ticketEl) ticketEl.textContent = `$${(this.state.admin.salesToday / this.state.admin.ordersCount).toFixed(2)}`;
+
+        this.renderAdminOrders();
+    },
+
+    toggleAdminStock: function(isChecked) {
+        const label = document.getElementById('admin-stock-jalapeno-label');
+        const badge = document.getElementById('jalapeno-badge');
+        const dashStatus = document.getElementById('jalapeno-stock-status');
+
+        if (isChecked) {
+            this.state.jalapenoStock = 2;
+            if (label) label.textContent = 'En Stock (2 disponibles) · Afecta menú app';
+            if (badge) { badge.textContent = 'Solo quedan 2'; badge.style.background = ''; badge.style.color = ''; }
+            if (dashStatus) dashStatus.innerHTML = '⚠️ STOCK CRÍTICO (Quedan 2)';
+            
+            const cards = document.querySelectorAll('.menu-card');
+            cards.forEach(card => {
+                if (card.querySelector('h4') && card.querySelector('h4').textContent.includes('Jalape')) {
+                    card.style.opacity = '1';
+                }
+            });
+            this.log('[CMS Strapi] Insumo Jalapeño reactivado en catálogo por la administración.', 'system');
+            this.triggerDynamicIsland("Stock Jalapeño Activo ✅", 2000);
+        } else {
+            this.state.jalapenoStock = 0;
+            if (label) label.textContent = 'Agotado · Bloqueado automáticamente en App';
+            if (badge) { badge.textContent = 'Agotado'; badge.style.background = '#ef4444'; badge.style.color = 'white'; }
+            if (dashStatus) dashStatus.innerHTML = '❌ AGOTADO';
+            
+            const cards = document.querySelectorAll('.menu-card');
+            cards.forEach(card => {
+                if (card.querySelector('h4') && card.querySelector('h4').textContent.includes('Jalape')) {
+                    card.style.opacity = '0.45';
+                }
+            });
+            this.log('[CMS Strapi] Insumo Jalapeño pausado por sucursal (Sin Existencias). Sincronizado a app en tiempo real.', 'system');
+            this.triggerDynamicIsland("Jalapeño Pausado 🚫", 2500);
+        }
+    },
+
+    toggleAdminPromo: function(isChecked) {
+        this.state.admin.promoActive = isChecked;
+        const label = document.getElementById('admin-promo-coupon-label');
+        const btnPromo = document.getElementById('btn-apply-promo');
+
+        if (isChecked) {
+            if (label) label.textContent = 'Campaña Activa · Redimible en checkout';
+            if (btnPromo) { btnPromo.style.opacity = '1'; btnPromo.disabled = false; }
+            this.log('[Marketing Wynn] Campaña 20% OFF activada en todas las sucursales.', 'system');
+            this.triggerDynamicIsland("Promo 20% Activada 🎟️", 2000);
+        } else {
+            if (label) label.textContent = 'Campaña Pausada por Marketing Wynn';
+            if (btnPromo) { btnPromo.style.opacity = '0.4'; }
+            if (this.state.coupon === 'WETZELS20') {
+                this.state.coupon = null;
+                this.goToCheckout();
+            }
+            this.log('[Marketing Wynn] Campaña 20% OFF pausada desde la consola central.', 'system');
+            this.triggerDynamicIsland("Promo 20% Pausada ⏸️", 2000);
+        }
+    },
+
+    toggleAdminStoreStatus: function(isChecked) {
+        const badge = document.getElementById('admin-store-status-badge');
+        const label = document.getElementById('admin-branch-status-label');
+
+        if (isChecked) {
+            this.state.admin.branchStatus = 'open';
+            if (badge) {
+                badge.textContent = 'Abierta';
+                badge.style.background = '#064e3b';
+                badge.style.color = '#34d399';
+                badge.style.borderColor = '#059669';
+            }
+            if (label) label.textContent = 'Sucursal Abierta · Aceptando Delivery y Pickup';
+            this.log('[Sucursal Mexicali] Apertura de canal digital confirmada. Recepción habilitada.', 'system');
+            this.triggerDynamicIsland("Sucursal Abierta 🟢", 2000);
+        } else {
+            this.state.admin.branchStatus = 'busy';
+            if (badge) {
+                badge.textContent = 'Pausada';
+                badge.style.background = '#451a03';
+                badge.style.color = '#fbbf24';
+                badge.style.borderColor = '#d97706';
+            }
+            if (label) label.textContent = 'Recepción Pausada por Alta Saturación en Cocina';
+            this.log('[Sucursal Mexicali] Canal digital pausado por sobredemanda de mostrador.', 'system');
+            this.triggerDynamicIsland("Canal Pausado ⚠️", 2500);
+        }
+    },
+
+    initAdminConsole: function() {
+        this.renderAdminOrders();
     },
 
     reset: function() {
-        this.state = { 
-            orderType: 'pickup', store: null, cartTotal: 0, menuItems: [], 
-            customPretzel: { active: false, price: 65.00, toppings: [], dips: [], drink: false }, 
-            coupon: null, jalapenoStock: 2 
-        };
+        this.state.orderType = 'pickup';
+        this.state.store = null;
+        this.state.cartTotal = 0;
+        this.state.menuItems = [];
+        this.state.customPretzel = { active: false, price: 65.00, toppings: [], dips: [], drink: false };
+        this.state.coupon = null;
+        this.state.jalapenoStock = 2;
+        this.state.admin.activeUserOrderId = null;
         
         const badge = document.getElementById('jalapeno-badge');
         const dashStatus = document.getElementById('jalapeno-stock-status');
-        if (badge) { badge.textContent = 'Solo quedan 2'; badge.style.background = ''; }
+        if (badge) { badge.textContent = 'Solo quedan 2'; badge.style.background = ''; badge.style.color = ''; }
         if (dashStatus) dashStatus.innerHTML = '⚠️ STOCK CRÍTICO (Quedan 2)';
         const cards = document.querySelectorAll('.menu-card');
         cards.forEach(card => {
-            if (card.querySelector('h4') && card.querySelector('h4').textContent.includes('Jalape') && card.querySelector('h4').textContent.includes('Cheese')) {
+            if (card.querySelector('h4') && card.querySelector('h4').textContent.includes('Jalape')) {
                 card.style.opacity = '1';
             }
         });
         
         // Reset DOM elements
         document.querySelectorAll('.ingredient-card').forEach(el => el.classList.remove('selected'));
-        document.querySelectorAll('.toggle').forEach(el => el.checked = false);
-        document.getElementById('coupon-code').value = '';
-        document.getElementById('maker-price').textContent = '65.00';
-        document.getElementById('cart-total-header').textContent = '$0.00';
-        document.getElementById('header-cart-btn').classList.add('hidden');
+        const toggles = document.querySelectorAll('.toggle');
+        toggles.forEach(el => el.checked = false);
+        const orderNotes = document.getElementById('order-notes');
+        if (orderNotes) orderNotes.value = '';
+        
+        const makerPrice = document.getElementById('maker-price');
+        if (makerPrice) makerPrice.textContent = '65.00';
+        
+        const cartTotalHeader = document.getElementById('cart-total-header');
+        if (cartTotalHeader) cartTotalHeader.textContent = '$0.00';
+        
+        const headerCartBtn = document.getElementById('header-cart-btn');
+        if (headerCartBtn) headerCartBtn.classList.add('hidden');
         
         document.querySelectorAll('.status-step').forEach(el => el.classList.remove('active'));
-        document.getElementById('status-1').classList.add('active');
+        const st1 = document.getElementById('status-1');
+        if (st1) st1.classList.add('active');
         
         this.updateVisualPretzel();
-        this.updateCartTotal(); // Refresca la UI del carrito flotante (ocultándolo)
+        this.updateCartTotal();
+        this.renderAdminOrders();
         
-        this.log('Sesión reseteada. Carrito vaciado.', 'system');
+        this.log('Sesión de usuario reseteada. Consola administrativa lista para nueva orden.', 'system');
         this.showStep('home');
     }
 };
 
-// Start the splash screen when script loads
+// Iniciar aplicación y consola al cargar
 document.addEventListener('DOMContentLoaded', () => {
     app.initSplash();
     app.showStep('login');
+    app.initAdminConsole();
 });

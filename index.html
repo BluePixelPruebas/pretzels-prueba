@@ -1860,42 +1860,51 @@ const SCREENS = {
   },
 
   app_maker: () => {
-    // PRD prices: base $65 salado, toppings +$10, dips +$15, drink +$40
-    const TOPPINGS = [
-      { name: "Sal de Mar", emoji: "🧂", sweet: false },
-      { name: "Canela", emoji: "✨", sweet: true },
-      { name: "Jalapeño", emoji: "🌶️", sweet: false },
-      { name: "Queso", emoji: "🧀", sweet: false },
-      { name: "Pepperoni", emoji: "🍕", sweet: false }
-    ];
-    const DIPS = [
-      { name: "Cheddar", emoji: "🧀" },
-      { name: "Pizza Sauce", emoji: "🍅" },
-      { name: "Caramel", emoji: "🍯" }
-    ];
+    const ICONS = {
+      "Sal de mar": "🧂", "Sin sal": "🤍", "Queso cheddar": "🧀", "Jalapeño": "🌶️", "Pepperoni": "🍕",
+      "Azúcar y canela": "🍥", "Almendra": "🌰", "Extra glaseado": "🧁",
+      "Cheddar Cheese": "🧀", "Jalapeño Cheddar": "🌶️", "Pizza Sauce": "🍅",
+      "Caramel Dip": "🍯", "Sweet Glaze": "🥛", "Cream Cheese": "🍨"
+    };
+    const cat = state.appMakerCat === "dulce" ? "dulce" : "salado";
+    const rule = DATA.makerRules[cat];
     const jalapenoOut = (state.jalapenoStock ?? 2) <= 0;
-    const tops = jalapenoOut ? state.appToppings.filter(x => x !== "Jalapeño") : state.appToppings;
-    const dips = state.appDips;
+    const validTopNames = rule.toppings.map(t => t.name);
+    const validDipNames = rule.dips.map(d => d.name);
+    const tops = (state.appToppings || []).filter(n => validTopNames.includes(n) && !(n === "Jalapeño" && jalapenoOut));
+    const dips = (state.appDips || []).filter(n => validDipNames.includes(n));
     const drink = state.appDrink;
-    const hasSalado = tops.some(t => ["Sal de Mar","Jalapeño","Queso","Pepperoni"].includes(t));
-    const hasDulce = tops.some(t => t === "Canela");
-    const price = 65 + tops.length * 10 + dips.length * 15 + (drink ? 40 : 0);
+    const previewImg = cat === "dulce" ? "sinful_cinnamon" : (tops.some(t => t === "Jalapeño" || t === "Pepperoni") ? "jalaroni" : "hero_pretzel");
+
+    const topExtra = tops.reduce((s, n) => s + (rule.toppings.find(t => t.name === n)?.p || 0), 0);
+    const dipExtra = dips.reduce((s, n) => s + (rule.dips.find(d => d.name === n)?.p || 0), 0);
+    const price = rule.basePrice + topExtra + dipExtra + (drink ? 40 : 0);
+
+    const switchCat = nextCat => {
+      if (nextCat === cat) return;
+      setState({
+        appMakerCat: nextCat,
+        appToppings: nextCat === "salado" ? ["Sal de mar"] : ["Azúcar y canela"],
+        appDips: []
+      });
+    };
     const toggleTop = name => {
       if (name === "Jalapeño" && jalapenoOut) { toast("Jalapeño agotado temporalmente en sucursal", "info"); return; }
       if (tops.includes(name)) { setState({ appToppings: tops.filter(x => x !== name) }); return; }
-      if (tops.length >= 3) { return; }
-      const t = TOPPINGS.find(x => x.name === name);
-      if (t.sweet && hasSalado) { return; }
-      if (!t.sweet && hasDulce) { return; }
-      setState({ appToppings: [...tops, name] });
+      let next = [...tops];
+      if (name === "Sal de mar") next = next.filter(x => x !== "Sin sal");
+      if (name === "Sin sal") next = next.filter(x => x !== "Sal de mar");
+      if (next.length >= 3) { toast("Máximo 3 toppings por pretzel", "info"); return; }
+      setState({ appToppings: [...next, name] });
     };
     const toggleDip = name => setState({ appDips: dips.includes(name) ? dips.filter(x => x !== name) : [...dips, name] });
     const addCart = () => {
-      const tEmoji = tops.map(n => TOPPINGS.find(t => t.name === n)?.emoji || "").join(" ");
-      const dEmoji = dips.map(n => DIPS.find(d => d.name === n)?.emoji || "").join(" ");
-      const sub = ["Toppings: " + (tops.join(", ") || "Solo base"), dips.length ? "Dips: " + dips.join(", ") : "", drink ? "Limonada Fresh +$40" : ""].filter(Boolean).join(" · ");
-      setState({ appCart: [...state.appCart, { id: "maker-" + Date.now(), name: "Pretzel Maker 🥨" + tEmoji + dEmoji, sub, price, img: "hero_pretzel", qty: 1 }] });
-      toast("Pretzel personalizado agregado", "check_circle");
+      const tEmoji = tops.map(n => ICONS[n] || "").join(" ");
+      const dEmoji = dips.map(n => ICONS[n] || "").join(" ");
+      const catTag = cat === "dulce" ? "Dulce" : "Salado";
+      const sub = [`Línea ${catTag}`, "Toppings: " + (tops.join(", ") || "Base simple"), dips.length ? "Dips: " + dips.join(", ") : "", drink ? "Limonada Fresh +$40" : ""].filter(Boolean).join(" · ");
+      setState({ appCart: [...state.appCart, { id: "maker-" + Date.now(), name: `Pretzel Maker ${catTag} 🥨${tEmoji ? " " + tEmoji : ""}${dEmoji ? " " + dEmoji : ""}`, sub, price, img: previewImg, qty: 1 }] });
+      toast(`Pretzel ${catTag.toLowerCase()} agregado al carrito`, "check_circle");
       go("app_checkout", "mobile");
     };
     return html`<${AppShell} active="app_maker">
@@ -1907,38 +1916,58 @@ const SCREENS = {
         <b style="font:700 22px/1 var(--font-display);color:var(--brand)">${fmt(price)}</b>
       </div>
 
+      <div>
+        <div class="ui-eyebrow" style="margin-bottom:6px">1 · Elige categoría (Salado o Dulce)</div>
+        <div class="wz-ing-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <button class=${cx("wz-ing-chip", cat === "salado" && "on")} onClick=${() => switchCat("salado")} style="padding:10px 8px">
+            <span style="font-size:19px">🧂</span>
+            <span>Salado · Mantequilla</span>
+            <small>Base ${fmt(DATA.makerRules.salado.basePrice)}</small>
+          </button>
+          <button class=${cx("wz-ing-chip", cat === "dulce" && "on")} onClick=${() => switchCat("dulce")} style="padding:10px 8px">
+            <span style="font-size:19px">🍥</span>
+            <span>Dulce · Canela Azúcar</span>
+            <small>Base ${fmt(DATA.makerRules.dulce.basePrice)}</small>
+          </button>
+        </div>
+      </div>
+
       <div class="ui-card" style="overflow:hidden">
-        <img src=${foto("hero_pretzel")} alt="Tu pretzel" style="width:100%;height:130px;object-fit:cover;display:block" />
-        <div style="padding:10px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span style="font-size:22px">🥨</span>
-          ${tops.map(n => html`<span style="font-size:18px">${TOPPINGS.find(t=>t.name===n)?.emoji}</span>`)}
-          ${dips.map(n => html`<span style="font-size:18px">${DIPS.find(d=>d.name===n)?.emoji}</span>`)}
-          ${drink && html`<span style="font-size:18px">🍋</span>`}
-          <span style="font-size:12px;color:var(--muted);margin-left:4px">${tops.length === 0 && dips.length === 0 ? "Solo la base · elige tus toppings" : [tops.join(", "), dips.length ? "Dip: "+dips.join(", ") : "", drink ? "Limonada" : ""].filter(Boolean).join(" · ")}</span>
+        <img src=${foto(previewImg)} alt="Tu pretzel" style="width:100%;height:124px;object-fit:cover;display:block" />
+        <div style="padding:10px 12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span class="ui-badge" style="height:20px;font-size:10px;background:${cat === "dulce" ? "#FEF3C7" : "var(--brand-soft)"};color:${cat === "dulce" ? "#92400E" : "var(--brand)"}">${cat === "dulce" ? "Línea Dulce" : "Línea Salado"}</span>
+          ${tops.map(n => html`<span style="font-size:16px">${ICONS[n] || "🥨"}</span>`)}
+          ${dips.map(n => html`<span style="font-size:16px">${ICONS[n] || "🥣"}</span>`)}
+          ${drink && html`<span style="font-size:16px">🍋</span>`}
+          <span style="font-size:11.5px;color:var(--muted);width:100%">${tops.length === 0 && dips.length === 0 ? "Base sin toppings · elige opciones compatibles" : [tops.join(", "), dips.length ? "Dip: "+dips.join(", ") : "", drink ? "Limonada" : ""].filter(Boolean).join(" · ")}</span>
         </div>
       </div>
 
       <div>
-        <div class="ui-eyebrow" style="margin-bottom:6px">1 · Toppings (+$10 c/u · máx 3) <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">${tops.length}/3</span></div>
+        <div class="ui-eyebrow" style="margin-bottom:6px">2 · Toppings ${cat === "dulce" ? "dulces" : "salados"} (máx 3) <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">${tops.length}/3</span></div>
         <div class="wz-ing-grid">
-          ${TOPPINGS.map(t => {
+          ${rule.toppings.map(t => {
             const isOut = t.name === "Jalapeño" && jalapenoOut;
-            const disabled = isOut || (!tops.includes(t.name) && (tops.length >= 3 || (t.sweet && hasSalado) || (!t.sweet && t.name !== "Sal de Mar" && hasDulce)));
+            const disabled = isOut || (!tops.includes(t.name) && tops.length >= 3);
             return html`<button class=${cx("wz-ing-chip", tops.includes(t.name) && !isOut && "on")} onClick=${() => toggleTop(t.name)} style=${disabled ? { opacity: ".4", cursor: "default" } : {}}>
-              <span style="font-size:18px">${t.emoji}</span>
-              <span>${t.name}</span><small>${isOut ? "Agotado" : "+$10"}</small>
+              <span style="font-size:18px">${ICONS[t.name] || "🥨"}</span>
+              <span>${t.name}</span><small>${isOut ? "Agotado" : (t.p ? "+" + fmt(t.p) : "Incluido")}</small>
             </button>`;
           })}
         </div>
       </div>
 
       <div>
-        <div class="ui-eyebrow" style="margin-bottom:6px">2 · Dips (+$15 c/u)</div>
+        <div class="ui-eyebrow" style="margin-bottom:6px">3 · Dips compatibles (${cat === "dulce" ? "Dulces" : "Salados"})</div>
         <div class="wz-ing-grid">
-          ${DIPS.map(d => html`<button class=${cx("wz-ing-chip", dips.includes(d.name) && "on")} onClick=${() => toggleDip(d.name)}>
-            <span style="font-size:18px">${d.emoji}</span><span>${d.name}</span><small>+$15</small>
+          ${rule.dips.map(d => html`<button class=${cx("wz-ing-chip", dips.includes(d.name) && "on")} onClick=${() => toggleDip(d.name)}>
+            <span style="font-size:18px">${ICONS[d.name] || "🥣"}</span><span>${d.name}</span><small>+${fmt(d.p)}</small>
           </button>`)}
         </div>
+      </div>
+
+      <div style="font-size:11px;line-height:1.35;color:var(--muted);background:#F8FAFC;border:1px solid var(--line);border-radius:10px;padding:8px 10px">
+        Segmentación <b>Salado / Dulce</b> por categoría (reglas y precios finales sujetos a confirmación en Discovery).
       </div>
 
       <div class="ui-card pad" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px">
@@ -2221,7 +2250,7 @@ const GUIDE = [
   { ruta: "app", screen: "app_login", device: "mobile", say: "<b>M0 · Acceso Rápido (Demo).</b> Simulación de bienvenida donde el perfil y balance de puntos (1,250) se recuperan al instante sin solicitar contraseñas. Fondo amarillo con patrón de marca." },
   { ruta: "app", screen: "app_stores", device: "mobile", say: "<b>M1–M2 · Selección de Sucursal y Cobertura.</b> Elige Mexicali · La Gran Vía en modo Delivery; el sistema valida cobertura en 15–30 min. Pickup también disponible." },
   { ruta: "app", screen: "app_inicio", device: "mobile", say: "<b>M3 · Menú de sucursal.</b> Productos destacados, sección de Menú Completo (9 artículos por categoría), promo C5 activa y acceso al Pretzel Maker." },
-  { ruta: "app", screen: "app_maker", device: "mobile", say: "<b>M4 · Crea tu Pretzel.</b> Regla Dulce/Salado del PRD, máx. 3 toppings (+$10 c/u), dip (+$15 c/u) y limonada (+$40). Precio en vivo desde $65." },
+  { ruta: "app", screen: "app_maker", device: "mobile", say: "<b>M4 · Crea tu Pretzel.</b> Categorías separadas Salado ($65 base) y Dulce ($70 base) según el PRD, máx. 3 toppings, dips compatibles y limonada (+$40)." },
   { ruta: "app", screen: "app_checkout", device: "mobile", say: "<b>M5–M6 · Carrito + Orquesta Pay (Simulado).</b> Desglose completo, cupón WETZELS20 (20% OFF), upsell Cheddar Dip, confirmación biométrica simulada y envío al KDS sin cobros reales." },
   { ruta: "app", screen: "app_pedido", device: "mobile", say: "<b>M7–M9 · Delivery White Label, Push ES/EN y Soporte.</b> Seguimiento de 15–30 min sin marca externa visible, notificaciones bilingües y reporte directo a C2." },
   { ruta: "app", screen: "app_rewards", device: "mobile", say: "<b>Rewards · Programa de Lealtad.</b> 1,250 pts disponibles, barra de progreso hacia el Pretzel Gratis, QR de acumulación y canje de Limonada Ch con código en tienda." },

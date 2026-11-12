@@ -1689,7 +1689,7 @@ const SCREENS = {
     const [showStoreSheet, setShowStoreSheet] = useState(false);
     const addProd = p => {
       if (p.id === "jalaroni" && (state.jalapenoStock ?? 2) <= 0) {
-        toast("Jalaroni agotado temporalmente desde KDS", "info");
+        toast("Jalaroni agotado temporalmente en sucursal", "info");
         return;
       }
       setState({ appCart: [...state.appCart, { id: p.id, name: p.name, price: p.price, img: p.img, qty: 1 }] });
@@ -1805,7 +1805,7 @@ const SCREENS = {
     const list = DATA.menu.filter(p => (cat === "Todos" || p.cat === cat) && (!ql || p.name.toLowerCase().includes(ql) || p.desc.toLowerCase().includes(ql) || p.cat.toLowerCase().includes(ql)));
     const addProd = p => {
       if (p.id === "jalaroni" && jalapenoOut) {
-        toast("Jalaroni agotado temporalmente desde KDS", "info");
+        toast("Jalaroni agotado temporalmente en sucursal", "info");
         return;
       }
       setState({ appCart: [...state.appCart, { id: p.id, name: p.name, price: p.price, img: p.img, qty: 1 }] });
@@ -1837,7 +1837,7 @@ const SCREENS = {
             <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
               <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
                 <span style="font:700 10px/1 var(--font-body);text-transform:uppercase;color:var(--brand)">${p.cat}</span>
-                ${isOut ? html`<span class="ui-badge warn" style="height:18px;padding:0 6px;font-size:9.5px">Agotado (KDS)</span>` : p.tag && html`<span class="ui-badge yellow" style="height:18px;padding:0 6px;font-size:9.5px">${p.tag}</span>`}
+                ${isOut ? html`<span class="ui-badge warn" style="height:18px;padding:0 6px;font-size:9.5px">Agotado en sucursal</span>` : p.tag && html`<span class="ui-badge yellow" style="height:18px;padding:0 6px;font-size:9.5px">${p.tag}</span>`}
               </div>
               <b style="font:700 14.5px/1.15 var(--font-display);color:var(--brand-ink)">${p.name}</b>
               <div style="font-size:11.5px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.desc}</div>
@@ -1881,7 +1881,7 @@ const SCREENS = {
     const hasDulce = tops.some(t => t === "Canela");
     const price = 65 + tops.length * 10 + dips.length * 15 + (drink ? 40 : 0);
     const toggleTop = name => {
-      if (name === "Jalapeño" && jalapenoOut) { toast("Jalapeño agotado temporalmente desde KDS", "info"); return; }
+      if (name === "Jalapeño" && jalapenoOut) { toast("Jalapeño agotado temporalmente en sucursal", "info"); return; }
       if (tops.includes(name)) { setState({ appToppings: tops.filter(x => x !== name) }); return; }
       if (tops.length >= 3) { return; }
       const t = TOPPINGS.find(x => x.name === name);
@@ -1962,11 +1962,14 @@ const SCREENS = {
   app_checkout: () => {
     const [couponInput, setCouponInput] = useState(state.appCouponInput || "");
     const delivery = state.appOrderType === "delivery";
-    const subtotal = state.appCart.reduce((s, it) => s + it.price * (it.qty || 1), 0)
+    const hasCart = state.appCart.length > 0;
+    const subtotal = hasCart ? (
+      state.appCart.reduce((s, it) => s + it.price * (it.qty || 1), 0)
       + (state.appUpsellCheddar ? 15 : 0)
-      + (delivery ? 35 : 0);
+      + (delivery ? 35 : 0)
+    ) : 0;
     const couponAllowed = state.adminCouponActive !== false;
-    const couponOk = couponAllowed && state.appCoupon && couponInput.trim().toUpperCase() === "WETZELS20";
+    const couponOk = hasCart && couponAllowed && state.appCoupon && couponInput.trim().toUpperCase() === "WETZELS20";
     const desc = couponOk ? Math.round(subtotal * 0.2) : 0;
     const total = Math.max(0, subtotal - desc);
     const removeIdx = idx => setState({ appCart: state.appCart.filter((_, i) => i !== idx) });
@@ -1974,7 +1977,7 @@ const SCREENS = {
       if (couponInput.trim().toUpperCase() === "WETZELS20") {
         if (!couponAllowed) {
           setState({ appCoupon: false });
-          toast("Cupón WETZELS20 pausado desde Consola KDS", "info");
+          toast("Cupón WETZELS20 no disponible temporalmente", "info");
           return;
         }
         setState({ appCoupon: true, appCouponInput: couponInput });
@@ -1984,6 +1987,7 @@ const SCREENS = {
       }
     };
     const pagarFaceId = () => {
+      if (!state.appCart.length) return;
       setState({ appFaceId: "scanning" });
       setTimeout(() => {
         const pts = Math.floor(total);
@@ -2000,17 +2004,23 @@ const SCREENS = {
           notes: state.appOrderNotes || "",
           isUserActive: true
         };
+        setCouponInput("");
         setState({
           appOrderPlaced: true,
           appPayErr: false,
           appTrackerStep: 0,
-          appFaceId: "done",
+          appFaceId: "idle",
+          appCart: [],
+          appUpsellCheddar: false,
+          appCoupon: false,
+          appCouponInput: "",
+          appOrderNotes: "",
           appPoints: (state.appPoints || 1250) + pts,
           adminOrders: [newOrder, ...orders],
           adminKdsActiveOrder: newId,
           adminSalesToday: (state.adminSalesToday || 14850) + total,
           adminOrdersCount: (state.adminOrdersCount || 84) + 1,
-          adminLogs: pushAdminLog("api", `[Orquesta Pay Simulado] Confirmación demo ${fmt(total)} registrada · Comanda #${newId} enviada a KDS.`)
+          adminLogs: pushAdminLog("api", `[Orquesta Pay Simulado] Confirmación demo ${fmt(total)} registrada · Comanda #${newId} enviada a cocina.`)
         });
         toast(`Pedido demo confirmado · +${pts} Rewards pts`, "check_circle");
         if (lado) flashFrame("desktop");
@@ -2036,7 +2046,7 @@ const SCREENS = {
       </div>
 
       <div class="ui-card pad" style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
-        ${state.appCart.length ? state.appCart.map((it, idx) => html`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        ${hasCart ? state.appCart.map((it, idx) => html`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <div style="display:flex;align-items:center;gap:10px;min-width:0">
             <img src=${foto(it.img)} alt=${it.name} style="width:42px;height:42px;border-radius:10px;object-fit:cover;flex:none" />
             <div style="min-width:0"><b style="font-size:13px;color:var(--brand-ink);display:block">${it.name}</b>${it.sub && html`<div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.sub}</div>`}</div>
@@ -2045,9 +2055,9 @@ const SCREENS = {
             <b style="font-size:13.5px;color:var(--brand)">${fmt(it.price)}</b>
             <button onClick=${() => removeIdx(idx)} style="all:unset;cursor:pointer;color:var(--muted);font-size:15px" title="Quitar">✕</button>
           </div>
-        </div>`) : html`<div class="ui-small" style="text-align:center;padding:8px">Carrito vacío · <button onClick=${() => go("app_maker","mobile")} style="all:unset;color:var(--brand);font-weight:700;cursor:pointer;text-decoration:underline">Arma tu pretzel</button></div>`}
-        ${delivery && html`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding-top:6px;border-top:1px solid var(--line)"><span>Envío estimado</span><span>+$35.00</span></div>`}
-        ${state.appUpsellCheddar && html`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Cheddar Dip extra</span><span>+$15.00</span></div>`}
+        </div>`) : html`<div class="ui-small" style="text-align:center;padding:8px">Carrito vacío · <button onClick=${() => go("app_menu","mobile")} style="all:unset;color:var(--brand);font-weight:700;cursor:pointer;text-decoration:underline">Ver menú</button> · <button onClick=${() => go("app_maker","mobile")} style="all:unset;color:var(--brand);font-weight:700;cursor:pointer;text-decoration:underline">Arma tu pretzel</button></div>`}
+        ${hasCart && delivery && html`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding-top:6px;border-top:1px solid var(--line)"><span>Envío estimado</span><span>+$35.00</span></div>`}
+        ${hasCart && state.appUpsellCheddar && html`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Cheddar Dip extra</span><span>+$15.00</span></div>`}
       </div>
 
       <div style="border-radius:14px;background:#EFF6FF;border:1px solid #BFDBFE;padding:11px 13px">
@@ -2057,7 +2067,7 @@ const SCREENS = {
           <button class="ui-btn sm" style="background:var(--ok)" onClick=${applyCoupon}>${couponOk ? "✓ Aplicado" : "Aplicar"}</button>
         </div>
         ${couponOk && html`<div style="margin-top:6px;font-size:12px;color:var(--ok);font-weight:700">WETZELS20 · 20% OFF aplicado — Ahorro: ${fmt(desc)}</div>`}
-        ${!couponAllowed && html`<div style="margin-top:6px;font-size:11.5px;color:var(--warn);font-weight:700">Campaña WETZELS20 pausada temporalmente desde Consola KDS</div>`}
+        ${!couponAllowed && html`<div style="margin-top:6px;font-size:11.5px;color:var(--warn);font-weight:700">Promoción WETZELS20 pausada temporalmente por la sucursal</div>`}
       </div>
 
       <div style="border-radius:14px;background:#fff;border:1px solid var(--line);padding:11px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px">
@@ -2118,7 +2128,7 @@ const SCREENS = {
           <span style="font-size:11px;background:rgba(255,255,255,.16);padding:4px 8px;border-radius:99px">Red White Label</span>
         </div>
         <div style="font:700 26px/1.15 var(--font-display);margin:6px 0">15 a 30 minutos</div>
-        <div style="font-size:12px;opacity:.9">Etapa actual KDS: <b>${steps[cur] || steps[0]}</b></div>
+        <div style="font-size:12px;opacity:.9">Estado del pedido: <b>${steps[cur] || steps[0]}</b></div>
       </div>
 
       <div class="ui-card pad" style="padding:14px;display:flex;flex-direction:column;gap:10px">
@@ -2134,15 +2144,15 @@ const SCREENS = {
           <button onClick=${() => setState({ appPushLang: isEs ? "en" : "es" })} style="all:unset;cursor:pointer;font:700 10.5px/1 var(--font-body);color:var(--brand);text-decoration:underline">Cambiar a ${isEs ? "EN" : "ES"}</button>
         </div>
         <b style="font-size:13px;color:var(--brand-ink);display:block">${isEs ? `🥨 ¡Tu pedido Wetzel's #${ordId} (${steps[cur]})!` : `🥨 Your Wetzel's order #${ordId} update!`}</b>
-        <span style="font-size:11.5px;color:var(--muted)">${isEs ? "Estatus en vivo sincronizado desde Consola KDS." : "Live order update synced from Kitchen KDS."}</span>
+        <span style="font-size:11.5px;color:var(--muted)">${isEs ? "Estatus en vivo sincronizado con la cocina de tu sucursal." : "Live order update synced with store kitchen."}</span>
       </div>
 
       <div class="ui-card pad" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px">
         <div>
           <b style="font-size:13px;color:var(--brand-ink);display:block">M9 · ¿Problema con tu pedido?</b>
-          <span style="font-size:11.5px;color:var(--muted)">Se turna directo a Operación en Consola (KDS).</span>
+          <span style="font-size:11.5px;color:var(--muted)">Atención directa con tu sucursal y soporte.</span>
         </div>
-        <button class="ui-btn sm outline" style="height:32px;padding:0 11px;font-size:11.5px" onClick=${() => toast("Reporte #SUP-109 turnado a Consola KDS (demo)", "check_circle")}>Reportar</button>
+        <button class="ui-btn sm outline" style="height:32px;padding:0 11px;font-size:11.5px" onClick=${() => toast("Reporte #SUP-109 enviado a soporte de sucursal (demo)", "check_circle")}>Reportar</button>
       </div>
     </${AppShell}>`;
   },

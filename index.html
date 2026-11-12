@@ -319,7 +319,7 @@
   .wz-app-nav { position: sticky; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px 6px 14px; z-index: 35; box-shadow: 0 -6px 20px rgba(0,43,102,.08); }
   .wz-app-nav button { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; font: 700 10.5px/1 var(--font-body), sans-serif; color: var(--muted); position: relative; padding: 4px 0; }
   .wz-app-nav button.on { color: var(--brand); }
-  .wz-app-pill-count { position: absolute; top: 0; right: 18px; min-width: 17px; height: 17px; border-radius: 99px; background: var(--accent); color: #fff; font: 800 10px/17px var(--font-body); text-align: center; padding: 0 4px; }
+  .wz-app-pill-count { position: absolute; top: 0; right: 11px; min-width: 17px; height: 17px; border-radius: 99px; background: var(--accent); color: #fff; font: 800 10px/17px var(--font-body); text-align: center; padding: 0 4px; }
   .wz-ing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
   .wz-ing-chip { all: unset; box-sizing: border-box; cursor: pointer; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 6px; text-align: center; font: 700 11.5px/1.15 var(--font-body), sans-serif; color: var(--brand-ink); transition: .12s; display: flex; flex-direction: column; gap: 2px; align-items: center; justify-content: center; }
   .wz-ing-chip small { font-size: 10px; color: var(--muted); font-weight: 600; }
@@ -774,8 +774,9 @@ function AppShell({ active, children, hideHeader }) {
       </div>
     </header>`}
     <div class="wz-app-body" style=${hideHeader ? { paddingTop: "16px" } : {}}>${children}</div>
-    ${!hideHeader && html`<nav class="wz-app-nav" style="grid-template-columns:repeat(5,1fr)" aria-label="Navegación App">
+    ${!hideHeader && html`<nav class="wz-app-nav" style="grid-template-columns:repeat(6,1fr)" aria-label="Navegación App">
       <button class=${cx((active === "app_inicio" || active === "app_stores") && "on")} onClick=${() => goApp("app_inicio")}><${Icon} name="home" size=${19} />Inicio</button>
+      <button class=${cx(active === "app_menu" && "on")} onClick=${() => goApp("app_menu")}><${Icon} name="restaurant_menu" size=${19} />Menú</button>
       <button class=${cx(active === "app_maker" && "on")} onClick=${() => goApp("app_maker")}><${Icon} name="tune" size=${19} />Maker</button>
       <button class=${cx(active === "app_checkout" && "on")} onClick=${() => goApp("app_checkout")} style="position:relative"><${Icon} name="shopping_cart" size=${19} />Carrito${count > 0 && html`<span class="wz-app-pill-count">${count}</span>`}</button>
       <button class=${cx(active === "app_rewards" && "on")} onClick=${() => goApp("app_rewards")}><${Icon} name="stars" size=${19} />Rewards</button>
@@ -1687,6 +1688,10 @@ const SCREENS = {
     const openStores = state.stores.filter(s => s.status === "Abierta");
     const [showStoreSheet, setShowStoreSheet] = useState(false);
     const addProd = p => {
+      if (p.id === "jalaroni" && (state.jalapenoStock ?? 2) <= 0) {
+        toast("Jalaroni agotado temporalmente desde KDS", "info");
+        return;
+      }
       setState({ appCart: [...state.appCart, { id: p.id, name: p.name, price: p.price, img: p.img, qty: 1 }] });
       toast(`${p.name} agregado al carrito`, "shopping_bag");
     };
@@ -1760,7 +1765,7 @@ const SCREENS = {
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <b style="font:700 15px/1 var(--font-display);color:var(--brand-ink)">Menú de sucursal (M3)</b>
-          <span class="ui-small" style="font-size:11.5px">Toca para agregar</span>
+          <button onClick=${() => go("app_menu", "mobile")} style="all:unset;cursor:pointer;font:700 12px/1 var(--font-body);color:var(--brand);display:inline-flex;align-items:center;gap:3px">Ver todo (${DATA.menu.length}) →</button>
         </div>
         <div class="wz-horiz">
           ${DATA.menu.slice(0, 5).map(p => html`<div class="wz-horiz-card" onClick=${() => addProd(p)}>
@@ -1773,6 +1778,11 @@ const SCREENS = {
               </div>
             </div>
           </div>`)}
+          <div class="wz-horiz-card" onClick=${() => go("app_menu", "mobile")} style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;background:var(--brand-soft);border:1.5px dashed var(--brand);gap:6px">
+            <span style="width:36px;height:36px;border-radius:50%;background:var(--brand);color:#FFD100;display:grid;place-items:center"><${Icon} name="restaurant_menu" size=${18} /></span>
+            <b style="font:700 12.5px/1.2 var(--font-display);color:var(--brand-ink)">Ver menú completo</b>
+            <span style="font-size:11px;color:var(--brand);font-weight:700">${DATA.menu.length} productos →</span>
+          </div>
         </div>
       </div>
 
@@ -1784,6 +1794,69 @@ const SCREENS = {
       </div>
     
       </${AppShell}>`;
+  },
+
+  app_menu: () => {
+    const cats = ["Todos", "Pretzels", "Bitz", "Dogs", "Bebidas", "Dips"];
+    const [cat, setCat] = useState("Todos");
+    const [q, setQ] = useState("");
+    const ql = q.trim().toLowerCase();
+    const jalapenoOut = (state.jalapenoStock ?? 2) <= 0;
+    const list = DATA.menu.filter(p => (cat === "Todos" || p.cat === cat) && (!ql || p.name.toLowerCase().includes(ql) || p.desc.toLowerCase().includes(ql) || p.cat.toLowerCase().includes(ql)));
+    const addProd = p => {
+      if (p.id === "jalaroni" && jalapenoOut) {
+        toast("Jalaroni agotado temporalmente desde KDS", "info");
+        return;
+      }
+      setState({ appCart: [...state.appCart, { id: p.id, name: p.name, price: p.price, img: p.img, qty: 1 }] });
+      toast(`${p.name} agregado al carrito`, "shopping_bag");
+    };
+    const count = state.appCart.reduce((s, it) => s + (it.qty || 1), 0);
+    return html`<${AppShell} active="app_menu">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px">
+        <div>
+          <span class="ui-badge" style="height:20px;font-size:10px">M3 · Menú de sucursal</span>
+          <h1 class="ui-h1" style="font-size:22px;color:var(--brand-ink);margin-top:4px">Menú Completo</h1>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:2px">${state.appStoreName} · ${list.length} de ${DATA.menu.length} artículos</div>
+        </div>
+        <button onClick=${() => go("app_maker", "mobile")} style="all:unset;cursor:pointer;background:var(--brand);color:#FFD100;font:700 11px/1 var(--font-display);padding:8px 11px;border-radius:12px;white-space:nowrap;flex:none">Pretzel Maker →</button>
+      </div>
+
+      <label class="ui-search" style="height:40px;padding:0 12px">
+        <${Icon} name="search" size=${17} />
+        <input type="text" autocomplete="off" value=${q} onInput=${e => setQ(e.target.value)} placeholder="Buscar pretzel, bitz, bebida, dip..." style="font-size:13px" />
+      </label>
+
+      <${Chips} items=${cats} active=${cat} onChange=${setCat} />
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${list.length ? list.map(p => {
+          const isOut = p.id === "jalaroni" && jalapenoOut;
+          return html`<div class="ui-card" style="padding:10px;display:flex;gap:11px;align-items:center;border:1px solid var(--line)">
+            <img src=${foto(p.img)} alt=${p.name} style="width:74px;height:74px;border-radius:12px;object-fit:cover;flex:none;background:var(--brand-soft)" />
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+              <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+                <span style="font:700 10px/1 var(--font-body);text-transform:uppercase;color:var(--brand)">${p.cat}</span>
+                ${isOut ? html`<span class="ui-badge warn" style="height:18px;padding:0 6px;font-size:9.5px">Agotado (KDS)</span>` : p.tag && html`<span class="ui-badge yellow" style="height:18px;padding:0 6px;font-size:9.5px">${p.tag}</span>`}
+              </div>
+              <b style="font:700 14.5px/1.15 var(--font-display);color:var(--brand-ink)">${p.name}</b>
+              <div style="font-size:11.5px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.desc}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <b style="font:700 15px/1 var(--font-display);color:var(--brand)">${fmt(p.price)}</b>
+                <button class="ui-btn yellow sm" onClick=${() => addProd(p)} disabled=${isOut} style=${isOut ? "height:28px;padding:0 10px;font-size:11px;opacity:.45" : "height:28px;padding:0 11px;font-size:11.5px"}>${isOut ? "Agotado" : "+ Agregar"}</button>
+              </div>
+            </div>
+          </div>`;
+        }) : html`<div class="ui-card pad" style="text-align:center"><b>Sin coincidencias</b><p class="ui-small" style="margin:4px 0 0">Prueba limpiar el buscador o cambiar de categoría.</p></div>`}
+      </div>
+
+      <div style="border-radius:14px;background:var(--brand-soft);border:1px solid rgba(0,77,170,.16);padding:11px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div style="font-size:11.5px;color:var(--brand-ink)">
+          <b>¿Listo para ordenar?</b> Tienes <b>${count}</b> artículo(s) en tu carrito.
+        </div>
+        <button class="ui-btn sm" style="background:var(--brand);color:#fff;flex:none" onClick=${() => go("app_checkout", "mobile")}>Ir al carrito →</button>
+      </div>
+    </${AppShell}>`;
   },
 
   app_maker: () => {
@@ -2137,7 +2210,7 @@ const GUIDE = [
   { ruta: "web", screen: "ayuda", device: "desktop", say: "<b>S4 · Centro de Ayuda y Contacto.</b> Preguntas frecuentes generales, formulario de contacto y aviso claro para soporte de pedidos dentro de la App (M9)." },
   { ruta: "app", screen: "app_login", device: "mobile", say: "<b>M0 · Acceso Rápido (Demo).</b> Simulación de bienvenida donde el perfil y balance de puntos (1,250) se recuperan al instante sin solicitar contraseñas. Fondo amarillo con patrón de marca." },
   { ruta: "app", screen: "app_stores", device: "mobile", say: "<b>M1–M2 · Selección de Sucursal y Cobertura.</b> Elige Mexicali · La Gran Vía en modo Delivery; el sistema valida cobertura en 15–30 min. Pickup también disponible." },
-  { ruta: "app", screen: "app_inicio", device: "mobile", say: "<b>M3 · Menú de sucursal.</b> Productos vigentes, promo C5 activa y acceso directo al Pretzel Maker. Acumula Rewards con cada compra." },
+  { ruta: "app", screen: "app_inicio", device: "mobile", say: "<b>M3 · Menú de sucursal.</b> Productos destacados, sección de Menú Completo (9 artículos por categoría), promo C5 activa y acceso al Pretzel Maker." },
   { ruta: "app", screen: "app_maker", device: "mobile", say: "<b>M4 · Crea tu Pretzel.</b> Regla Dulce/Salado del PRD, máx. 3 toppings (+$10 c/u), dip (+$15 c/u) y limonada (+$40). Precio en vivo desde $65." },
   { ruta: "app", screen: "app_checkout", device: "mobile", say: "<b>M5–M6 · Carrito + Orquesta Pay (Simulado).</b> Desglose completo, cupón WETZELS20 (20% OFF), upsell Cheddar Dip, confirmación biométrica simulada y envío al KDS sin cobros reales." },
   { ruta: "app", screen: "app_pedido", device: "mobile", say: "<b>M7–M9 · Delivery White Label, Push ES/EN y Soporte.</b> Seguimiento de 15–30 min sin marca externa visible, notificaciones bilingües y reporte directo a C2." },
